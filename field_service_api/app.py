@@ -1,6 +1,8 @@
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
 
+
+from os import environ
 import xmlrpc.client
 
 
@@ -15,15 +17,17 @@ def hello_world():
 
 @app.route("/login", methods=["POST"])
 def log_in():
-    url = "https://sample-awb.odoo.com"
-
-    common = xmlrpc.client.ServerProxy("{}/xmlrpc/2/common".format(url))
+    common = xmlrpc.client.ServerProxy("{}/xmlrpc/2/common".format(environ.get("URL")))
 
     common.version()
 
     uid = common.authenticate(
-        "sample-awb", request.json.get("username"), request.json.get("password"), {}
+        environ.get("DB"),
+        request.json.get("username"),
+        request.json.get("password"),
+        {},
     )
+    print(uid)
     if uid:
         return "<p>Successful</p>"
     else:
