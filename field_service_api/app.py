@@ -42,7 +42,23 @@ def log_in():
     if uid:
         session["uid"] = uid
         session["email"] = request.json.get("email")
-
+        models = xmlrpc.client.ServerProxy(
+            "{}/xmlrpc/2/object".format(environ.get("URL"))
+        )
+        name = models.execute_kw(
+            environ.get("DB"),
+            session["uid"],
+            request.json.get("password"),
+            "res.users",
+            "search_read",
+            [[["id", "=", session["uid"]]]],
+            {
+                "fields": [
+                    "name",
+                ]
+            },
+        )
+        print(name[0]["name"])
         return "log in"
     else:
         return "<p>not</p>"
