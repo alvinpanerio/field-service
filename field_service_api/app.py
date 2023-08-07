@@ -17,7 +17,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 app.config["SECRET_KEY"] = environ.get("SESSION_SECRET")
 
 
-Session(app)
+ses = Session(app)
 CORS(app, supports_credentials=True)
 
 

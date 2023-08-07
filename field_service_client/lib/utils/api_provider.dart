@@ -1,46 +1,48 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
 
 class ApiProvider {
   final Dio dio = Dio();
 
-  Future _get(String url) async {
+  Future _get(String res) async {
     try {
       dio.options.extra['withCredentials'] = true;
       final response = await dio.get(
-        url,
+        "${dotenv.env['API_URL']}" "$res",
       );
       print(response);
+      return response;
     } catch (err) {
       return;
     }
   }
 
-  Future _post(String url, [Map<String, dynamic>? data]) async {
+  Future _post(String res, [Map<String, dynamic>? data]) async {
     try {
       dio.options.extra['withCredentials'] = true;
+
       final response = await dio.post(
-        url,
+        "${dotenv.env['API_URL']}" "$res",
         data: data,
       );
-      print(response);
+      return response;
     } catch (err) {
-      return;
+      return err;
     }
   }
 
-  void login(String email, String password) {
-    _post(
-      "http://localhost:5000/login",
+  void login(String email, String password, context) async {
+    Response response = await _post(
+      "/login",
       {
         'email': email,
         'password': password,
       },
     );
-  }
 
-  void getCookies() {
-    _get(
-      "http://localhost:5000/sessionss",
-    );
+    if (response.statusCode == 200) {
+      GoRouter.of(context).push("/");
+    }
   }
 }

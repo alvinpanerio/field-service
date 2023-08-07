@@ -20,42 +20,36 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TextField(
-            keyboardType: TextInputType.emailAddress,
-            controller: emailController,
-            decoration: const InputDecoration(
-              labelText: "Email",
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 20),
-          TextField(
-            controller: passwordController,
-            keyboardType: TextInputType.visiblePassword,
-            autofillHints: const [AutofillHints.email],
-            decoration: const InputDecoration(
-              labelText: "Password",
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 20),
-          FilledButton(
-            onPressed: () {
-              apiProvider.login(emailController.text, passwordController.text);
-            },
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-            ),
-            child: Text(
-              "Log In",
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.background,
+          Material(
+            child: TextField(
+              keyboardType: TextInputType.emailAddress,
+              controller: emailController,
+              decoration: const InputDecoration(
+                labelText: "Email",
+                border: OutlineInputBorder(),
               ),
             ),
           ),
+          const SizedBox(height: 20),
+          Material(
+            child: TextField(
+              controller: passwordController,
+              keyboardType: TextInputType.visiblePassword,
+              autofillHints: const [AutofillHints.email],
+              decoration: const InputDecoration(
+                labelText: "Password",
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
           FilledButton(
             onPressed: () {
-              apiProvider.getCookies();
+              apiProvider.login(
+                emailController.text,
+                passwordController.text,
+                context,
+              );
             },
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
