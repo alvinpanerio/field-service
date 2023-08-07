@@ -1,5 +1,8 @@
-from flask import Flask, request
-from flask_cors import CORS, cross_origin
+from flask import Flask, request, session
+from flask_cors import CORS
+
+
+from flask_session import Session
 
 
 from os import environ
@@ -7,7 +10,15 @@ import xmlrpc.client
 
 
 app = Flask(__name__)
-cors = CORS(app)
+
+
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+app.config["SECRET_KEY"] = environ.get("SESSION_SECRET")
+
+
+Session(app)
+CORS(app, supports_credentials=True)
 
 
 @app.route("/")
@@ -23,12 +34,27 @@ def log_in():
 
     uid = common.authenticate(
         environ.get("DB"),
-        request.json.get("username"),
+        request.json.get("email"),
         request.json.get("password"),
         {},
     )
-    print(uid)
+
     if uid:
-        return "<p>Successful</p>"
+        session["uid"] = uid
+        session["email"] = request.json.get("email")
+
+        return "log in"
     else:
         return "<p>not</p>"
+
+
+@app.route("/sessionss", methods=["GET"])
+def get_session():
+    if "uid" in session:
+        return "qwe"
+    else:
+        return "asd"
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
