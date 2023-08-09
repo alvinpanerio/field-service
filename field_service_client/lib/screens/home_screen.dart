@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
             List<dynamic> service = state.service;
 
             return SizedBox(
-              height: MediaQuery.of(context).size.height - 100,
+              height: MediaQuery.of(context).size.height - 180,
               child: ListView.builder(
                 itemCount: service.length,
                 itemBuilder: (v, i) => Card(
