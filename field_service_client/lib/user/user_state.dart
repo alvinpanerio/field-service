@@ -10,13 +10,15 @@ class UserState extends Equatable {
 
 class UserInitial extends UserState {}
 
+class UserLoading extends UserState {}
+
 class UserLoaded extends UserState {
   const UserLoaded({
-    required this.name,
+    required this.user,
   });
 
-  final String name;
+  final User user;
 
   @override
-  List<Object> get props => [name];
+  List<Object> get props => [user];
 }

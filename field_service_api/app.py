@@ -1,4 +1,4 @@
-from flask import Flask, request, session
+from flask import Flask, request, session, jsonify
 from flask_cors import CORS
 
 
@@ -45,6 +45,7 @@ def log_in():
         models = xmlrpc.client.ServerProxy(
             "{}/xmlrpc/2/object".format(environ.get("URL"))
         )
+
         name = models.execute_kw(
             environ.get("DB"),
             session["uid"],
@@ -58,8 +59,12 @@ def log_in():
                 ]
             },
         )
-        print(name[0]["name"])
-        return "log in"
+
+        
+
+        response = {"name": name[0]["name"]}
+
+        return jsonify(response)
     else:
         return "<p>not</p>"
 

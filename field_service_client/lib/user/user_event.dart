@@ -10,11 +10,24 @@ abstract class UserEvent extends Equatable {
 
 class GetName extends UserEvent {
   const GetName({
+    this.user = const User(name: '', cookies: ''),
+  });
+
+  final User user;
+
+  @override
+  List<Object> get props => [user];
+}
+
+class SetUser extends UserEvent {
+  const SetUser({
     required this.name,
+    required this.cookies,
   });
 
   final String name;
+  final String cookies;
 
   @override
-  List<Object> get props => [name];
+  List<Object> get props => [name, cookies];
 }

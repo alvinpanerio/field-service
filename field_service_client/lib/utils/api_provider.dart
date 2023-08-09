@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 
@@ -32,17 +35,15 @@ class ApiProvider {
     }
   }
 
-  void login(String email, String password, context) async {
-    Response response = await _post(
+  Future login(String email, String password, context) async {
+    final rawResponse = await _post(
       "/login",
       {
         'email': email,
         'password': password,
       },
     );
-
-    if (response.statusCode == 200) {
-      GoRouter.of(context).push("/");
-    }
+    Map<String, dynamic> response = jsonDecode(rawResponse.toString());
+    return response["name"];
   }
 }

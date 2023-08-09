@@ -29,13 +29,16 @@ class AppRouter {
           },
         ),
       ],
-      // redirect: (context, state) {
-      //   if (!isAuth) {
-      //     return '/login';
-      //   } else {
-      //     return '/';
-      //   }
-      // },
+      initialLocation: "/",
+      redirect: (context, state) {
+        if (isAuth) {
+          print(isAuth);
+          return "/";
+        } else {
+          print(isAuth);
+          return '/login';
+        }
+      },
     );
     return router;
   }
