@@ -44,104 +44,103 @@ def log_in():
         session["email"] = request.json.get("email")
         session["password"] = request.json.get("password")
 
-        models = xmlrpc.client.ServerProxy(
-            "{}/xmlrpc/2/object".format(environ.get("URL"))
-        )
+    isAuth()
 
-        name = models.execute_kw(
-            environ.get("DB"),
-            session["uid"],
-            request.json.get("password"),
-            "res.users",
-            "search_read",
-            [[["id", "=", session["uid"]]]],
-            {
-                "fields": [
-                    "name",
-                ]
-            },
-        )
+    name = query(
+        session["uid"],
+        session["password"],
+        "res.users",
+        "search_read",
+        [[["id", "=", session["uid"]]]],
+        ["name"],
+    )
 
-        services = models.execute_kw(
-            environ.get("DB"),
-            session["uid"],
-            request.json.get("password"),
-            "project.task",
-            "search_read",
-            [],
-            {
-                "fields": [
-                    "name",
-                    "project_id",
-                    "user_ids",
-                ]
-            },
-        )
+    services = query(
+        session["uid"],
+        session["password"],
+        "project.task",
+        "search_read",
+        [],
+        [
+            "name",
+            "partner_id",
+            "project_id",
+            "user_ids",
+        ],
+    )
 
-        response = {"name": name[0]["name"], "services": services}
+    response = {"name": name[0]["name"], "services": services}
 
-        return jsonify(response)
-    else:
-        return "<p>not</p>"
+    return jsonify(response), 200
 
 
 @app.route("/all-tasks", methods=["GET"])
 def get_all_tasks():
-    if "uid" in session:
-        models = xmlrpc.client.ServerProxy(
-            "{}/xmlrpc/2/object".format(environ.get("URL"))
-        )
+    isAuth()
 
-        services = models.execute_kw(
-            environ.get("DB"),
+    response = {
+        "services": query(
             session["uid"],
             session["password"],
             "project.task",
             "search_read",
             [],
-            {
-                "fields": [
-                    "name",
-                    "project_id",
-                    "user_ids",
-                ]
-            },
+            [
+                "name",
+                "partner_id",
+                "project_id",
+                "user_ids",
+            ],
         )
+    }
 
-        response = {"services": services}
-
-        return jsonify(response)
-    else:
-        return "asd"
+    return jsonify(response), 200
 
 
 @app.route("/my-tasks", methods=["GET"])
 def get_my_tasks():
-    if "uid" in session:
-        models = xmlrpc.client.ServerProxy(
-            "{}/xmlrpc/2/object".format(environ.get("URL"))
-        )
+    isAuth()
 
-        services = models.execute_kw(
-            environ.get("DB"),
+    response = {
+        "services": query(
             session["uid"],
             session["password"],
             "project.task",
             "search_read",
             [[["user_ids", "=", session["uid"]]]],
-            {
-                "fields": [
-                    "name",
-                    "project_id",
-                    "user_ids",
-                ]
-            },
+            [
+                "name",
+                "partner_id",
+                "project_id",
+                "user_ids",
+            ],
         )
+    }
 
-        response = {"services": services}
-        return jsonify(response)
-    else:
-        return "asd"
+    return jsonify(response), 200
+
+
+def query(uid, password, model, method, condition, fields):
+    models = xmlrpc.client.ServerProxy(
+        "{}/xmlrpc/2/object".format(
+            environ.get("URL"),
+        ),
+    )
+    return models.execute_kw(
+        environ.get("DB"),
+        uid,
+        password,
+        model,
+        method,
+        condition,
+        {"fields": fields},
+    )
+
+
+def isAuth():
+    if "uid" and "email" and "password" in session:
+        return
+    return "Not Authenticated!", 400
 
 
 if __name__ == "__main__":

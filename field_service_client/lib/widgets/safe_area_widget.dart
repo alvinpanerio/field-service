@@ -11,7 +11,7 @@ class SafeAreaWidget extends StatelessWidget {
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: 50,
+            horizontal: 20,
             vertical: 10,
           ),
           child: screen,

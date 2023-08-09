@@ -82,31 +82,42 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: service.length,
                 itemBuilder: (v, i) => Card(
                   key: UniqueKey(),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: 230,
-                              child: Text(
-                                "Project Name: ${service[i]['name'].toString()}",
-                                softWrap: true,
-                                maxLines: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: 230,
+                                child: Text(
+                                  "Project Name: ${service[i]['name'].toString()}",
+                                  softWrap: true,
+                                  maxLines: 2,
+                                ),
                               ),
-                            ),
-                            Text(
-                                "ID: ${service[i]['project_id'][0].toString()}"),
-                            Text(
-                                "Type: ${service[i]['project_id'][1].toString()}"),
-                            Text(
-                                "User IDs: ${service[i]['user_ids'].toString()}"),
-                          ],
-                        ),
-                      ]),
+                              SizedBox(
+                                width: 230,
+                                child: Text(
+                                  "Customer: ${service[i]['partner_id'] == false ? 'None' : service[i]['partner_id'][1].toString()}",
+                                  softWrap: true,
+                                  maxLines: 2,
+                                ),
+                              ),
+                              Text(
+                                  "ID: ${service[i]['project_id'][0].toString()}"),
+                              Text(
+                                  "Type: ${service[i]['project_id'][1].toString()}"),
+                              Text(
+                                  "User IDs: ${service[i]['user_ids'].toString()}"),
+                            ],
+                          ),
+                        ]),
+                  ),
                 ),
               ),
             );
