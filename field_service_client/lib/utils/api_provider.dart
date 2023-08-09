@@ -1,9 +1,6 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:go_router/go_router.dart';
 
 class ApiProvider {
   final Dio dio = Dio();
@@ -43,7 +40,29 @@ class ApiProvider {
         'password': password,
       },
     );
+
     Map<String, dynamic> response = jsonDecode(rawResponse.toString());
-    return response["name"];
+
+    return response;
+  }
+
+  Future getAllTasks() async {
+    final rawResponse = await _get(
+      "/all-tasks",
+    );
+
+    Map<String, dynamic> response = jsonDecode(rawResponse.toString());
+
+    return response;
+  }
+
+  Future getMyTasks() async {
+    final rawResponse = await _get(
+      "/my-tasks",
+    );
+
+    Map<String, dynamic> response = jsonDecode(rawResponse.toString());
+
+    return response;
   }
 }

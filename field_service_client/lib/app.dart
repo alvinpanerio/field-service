@@ -1,8 +1,8 @@
+import 'package:field_service_client/bloc/service/service_bloc.dart';
 import 'package:field_service_client/routes/routes.dart';
-import 'package:field_service_client/user/user_bloc.dart';
 import 'package:flutter/material.dart';
-import 'dart:html';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/user/user_bloc.dart';
 
 import 'models/user.dart';
 
@@ -17,6 +17,12 @@ class App extends StatelessWidget {
           create: (context) => UserBloc()
             ..add(
               const GetName(),
+            ),
+        ),
+        BlocProvider(
+          create: (context) => ServiceBloc()
+            ..add(
+              const GetServices(),
             ),
         )
       ],

@@ -1,10 +1,9 @@
-import 'package:dio/dio.dart';
+import 'package:field_service_client/bloc/service/service_bloc.dart';
+
 import 'package:field_service_client/utils/api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-
-import '../user/user_bloc.dart';
+import '../bloc/user/user_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -60,7 +59,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
 
                 context.read<UserBloc>().add(SetUser(
-                    name: response.toString(), cookies: response.toString()));
+                    name: response["name"].toString(),
+                    cookies: response["name"].toString()));
+
+                context
+                    .read<ServiceBloc>()
+                    .add(SetServices(services: response["services"]));
               },
               style: FilledButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,

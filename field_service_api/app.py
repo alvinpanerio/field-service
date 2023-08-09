@@ -42,6 +42,8 @@ def log_in():
     if uid:
         session["uid"] = uid
         session["email"] = request.json.get("email")
+        session["password"] = request.json.get("password")
+
         models = xmlrpc.client.ServerProxy(
             "{}/xmlrpc/2/object".format(environ.get("URL"))
         )
@@ -60,19 +62,84 @@ def log_in():
             },
         )
 
-        
+        services = models.execute_kw(
+            environ.get("DB"),
+            session["uid"],
+            request.json.get("password"),
+            "project.task",
+            "search_read",
+            [],
+            {
+                "fields": [
+                    "name",
+                    "project_id",
+                    "user_ids",
+                ]
+            },
+        )
 
-        response = {"name": name[0]["name"]}
+        response = {"name": name[0]["name"], "services": services}
 
         return jsonify(response)
     else:
         return "<p>not</p>"
 
 
-@app.route("/sessionss", methods=["GET"])
-def get_session():
+@app.route("/all-tasks", methods=["GET"])
+def get_all_tasks():
     if "uid" in session:
-        return "qwe"
+        models = xmlrpc.client.ServerProxy(
+            "{}/xmlrpc/2/object".format(environ.get("URL"))
+        )
+
+        services = models.execute_kw(
+            environ.get("DB"),
+            session["uid"],
+            session["password"],
+            "project.task",
+            "search_read",
+            [],
+            {
+                "fields": [
+                    "name",
+                    "project_id",
+                    "user_ids",
+                ]
+            },
+        )
+
+        response = {"services": services}
+
+        return jsonify(response)
+    else:
+        return "asd"
+
+
+@app.route("/my-tasks", methods=["GET"])
+def get_my_tasks():
+    if "uid" in session:
+        models = xmlrpc.client.ServerProxy(
+            "{}/xmlrpc/2/object".format(environ.get("URL"))
+        )
+
+        services = models.execute_kw(
+            environ.get("DB"),
+            session["uid"],
+            session["password"],
+            "project.task",
+            "search_read",
+            [[["user_ids", "=", session["uid"]]]],
+            {
+                "fields": [
+                    "name",
+                    "project_id",
+                    "user_ids",
+                ]
+            },
+        )
+
+        response = {"services": services}
+        return jsonify(response)
     else:
         return "asd"
 
