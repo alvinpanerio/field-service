@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:field_service_client/bloc/worksheet/worksheet_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiProvider {
@@ -11,7 +12,7 @@ class ApiProvider {
       final response = await dio.get(
         "${dotenv.env['API_URL']}" "$res",
       );
-      print(response);
+
       return response;
     } catch (err) {
       return;
@@ -59,6 +60,26 @@ class ApiProvider {
   Future getMyTasks() async {
     final rawResponse = await _get(
       "/my-tasks",
+    );
+
+    Map<String, dynamic> response = jsonDecode(rawResponse.toString());
+
+    return response;
+  }
+
+  Future getTask(String id) async {
+    final rawResponse = await _get(
+      "/task?id=$id",
+    );
+
+    Map<String, dynamic> response = jsonDecode(rawResponse.toString());
+
+    return response;
+  }
+
+  Future getWorksheet(String id) async {
+    final rawResponse = await _get(
+      "/worksheet?id=$id",
     );
 
     Map<String, dynamic> response = jsonDecode(rawResponse.toString());

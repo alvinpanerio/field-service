@@ -120,6 +120,87 @@ def get_my_tasks():
     return jsonify(response), 200
 
 
+@app.route("/task", methods=["GET"])
+def get_task():
+    isAuth()
+
+    id = int(request.args["id"])
+
+    response = {
+        "task": query(
+            session["uid"],
+            session["password"],
+            "project.task",
+            "search_read",
+            [[["id", "=", id]]],
+            [
+                "project_id",
+                "user_ids",
+                "partner_id",
+                "partner_phone",
+                "sale_line_id",
+                "planned_date_begin",
+                "tag_ids",
+            ],
+        ),
+    }
+
+    # worksheet = (
+    #     query(
+    #         session["uid"],
+    #         session["password"],
+    #         "x_project_task_worksheet_template_2",
+    #         "search_read",
+    #         [[["x_project_task_id", "=", id]]],
+    #         [
+    #             "x_name",
+    #             "x_project_task_id",
+    #             "x_manufacturer",
+    #             "x_model",
+    #             "x_serial_number",
+    #             "x_intervention_type",
+    #             "x_description",
+    #             "x_checkbox",
+    #             "x_date",
+    #             "x_worker_signature",
+    #         ],
+    #     ),
+    # )
+
+    return jsonify(response), 200
+
+
+@app.route("/worksheet", methods=["GET"])
+def get_worksheet():
+    isAuth()
+
+    id = int(request.args["id"])
+
+    response = {
+        "worksheet": query(
+            session["uid"],
+            session["password"],
+            "x_project_task_worksheet_template_2",
+            "search_read",
+            [[["x_project_task_id", "=", id]]],
+            [
+                "x_name",
+                "x_project_task_id",
+                "x_manufacturer",
+                "x_model",
+                "x_serial_number",
+                "x_intervention_type",
+                "x_description",
+                "x_checkbox",
+                "x_date",
+                "x_worker_signature",
+            ],
+        ),
+    }
+
+    return jsonify(response), 200
+
+
 def query(uid, password, model, method, condition, fields):
     models = xmlrpc.client.ServerProxy(
         "{}/xmlrpc/2/object".format(

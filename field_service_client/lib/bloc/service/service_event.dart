@@ -16,25 +16,6 @@ class GetServices extends ServiceEvent {
   List<Object> get props => [service];
 }
 
-// class SetServices extends ServiceEvent {
-//   const SetServices({
-//     required this.name,
-//     required this.projectId,
-//     required this.userIds,
-//   });
-
-//   final String name;
-//   final List<dynamic> projectId;
-//   final List<dynamic> userIds;
-
-//   @override
-//   List<Object> get props => [
-//         name,
-//         projectId,
-//         userIds,
-//       ];
-// }
-
 class SetServices extends ServiceEvent {
   const SetServices({
     required this.services,

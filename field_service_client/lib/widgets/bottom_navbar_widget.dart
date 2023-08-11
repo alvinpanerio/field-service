@@ -36,12 +36,7 @@ class _BottomNavbarWidgetState extends State<BottomNavbarWidget> {
                 GoRouter.of(context).push("/tasks");
               }
               break;
-
-            case 2:
-              {
-                GoRouter.of(context).push("/profile");
-              }
-              break;
+              
           }
         },
         selectedIndex: currentPageIndex,
@@ -55,11 +50,6 @@ class _BottomNavbarWidgetState extends State<BottomNavbarWidget> {
             selectedIcon: Icon(Icons.task_rounded),
             icon: Icon(Icons.task_outlined),
             label: 'My Tasks',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.account_circle),
-            icon: Icon(Icons.account_circle_outlined),
-            label: 'Profile',
           ),
         ],
       ),

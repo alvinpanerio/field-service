@@ -1,10 +1,12 @@
 import 'package:field_service_client/bloc/service/service_bloc.dart';
+import 'package:field_service_client/bloc/worksheet/worksheet_bloc.dart';
 import 'package:field_service_client/routes/routes.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/user/user_bloc.dart';
 
+import 'bloc/task/task_bloc.dart';
 import 'models/user.dart';
 
 class App extends StatelessWidget {
@@ -24,6 +26,18 @@ class App extends StatelessWidget {
           create: (context) => ServiceBloc()
             ..add(
               const GetServices(),
+            ),
+        ),
+        BlocProvider(
+          create: (context) => WorksheetBloc()
+            ..add(
+              const GetWorksheet(),
+            ),
+        ),
+        BlocProvider(
+          create: (context) => TaskBloc()
+            ..add(
+              const GetTask(),
             ),
         )
       ],

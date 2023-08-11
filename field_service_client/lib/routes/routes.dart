@@ -1,5 +1,6 @@
 import 'package:field_service_client/screens/home_screen.dart';
 import 'package:field_service_client/screens/login_screen.dart';
+import 'package:field_service_client/screens/task_item_screen.dart';
 import 'package:field_service_client/screens/tasks_screen.dart';
 import 'package:field_service_client/widgets/bottom_navbar_widget.dart';
 import 'package:field_service_client/widgets/safe_area_widget.dart';
@@ -17,7 +18,6 @@ class AppRouter {
         ShellRoute(
           navigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state, child) {
-            print(state.location);
             return NoTransitionPage(
               child: BottomNavbarWidget(location: state.location, child: child),
             );
@@ -27,9 +27,10 @@ class AppRouter {
               name: "login",
               path: '/login',
               pageBuilder: (context, state) {
-                return const MaterialPage(
+                return MaterialPage(
                   child: SafeAreaWidget(
-                    LoginScreen(),
+                    const LoginScreen(),
+                    state,
                   ),
                 );
               },
@@ -38,9 +39,10 @@ class AppRouter {
               name: "home",
               path: '/',
               pageBuilder: (context, state) {
-                return const MaterialPage(
+                return MaterialPage(
                   child: SafeAreaWidget(
-                    HomeScreen(),
+                    const HomeScreen(),
+                    state,
                   ),
                 );
               },
@@ -49,9 +51,22 @@ class AppRouter {
               name: "tasks",
               path: '/tasks',
               pageBuilder: (context, state) {
-                return const MaterialPage(
+                return MaterialPage(
                   child: SafeAreaWidget(
-                    TasksScreen(),
+                    const TasksScreen(),
+                    state,
+                  ),
+                );
+              },
+            ),
+            GoRoute(
+              name: "taskItem",
+              path: '/task/:id',
+              pageBuilder: (context, state) {
+                return MaterialPage(
+                  child: SafeAreaWidget(
+                    TaskItemScreen(state.params),
+                    state,
                   ),
                 );
               },

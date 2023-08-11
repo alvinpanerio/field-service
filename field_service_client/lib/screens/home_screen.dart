@@ -121,20 +121,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             );
-            // return Column(
-            //   mainAxisAlignment: MainAxisAlignment.start,
-            //   children: [
-            //     for (var i in service)
-            //       Card(
-            //         child: Row(children: [
-            //           Text(i['name'].toString()),
-            //           Text(i['project_id'][0].toString()),
-            //           Text(i['project_id'][1].toString()),
-            //           Text(i['user_ids'].toString()),
-            //         ]),
-            //       )
-            //   ],
-            // );
           } else {
             return const Text("went wrong");
           }
