@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  basic_utils:
+    dependency: "direct main"
+    description:
+      name: basic_utils
+      sha256: "1fb8c5493fc1b9500512b2e153c0b9bcc9e281621cde7f810420f4761be9e38d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.6.1"
   bloc:
     dependency: transitive
     description:
@@ -49,6 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.1"
+  convert:
+    dependency: transitive
+    description:
+      name: convert
+      sha256: "0f08b14755d163f6e2134cb58222dd25ea2a2ee8a195e53983d57c075324d592"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.1"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -128,6 +144,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.2.4"
+  http:
+    dependency: transitive
+    description:
+      name: http
+      sha256: "759d1a329847dd0f39226c688d3e06a6b8679668e350e2891a6474f8b4bb8525"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   http_parser:
     dependency: transitive
     description:
@@ -144,6 +168,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.7"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      sha256: b10a7b2ff83d83c777edba3c6a0f97045ddadd56c944e1a23a3fdf43a1bf4467
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.8.1"
   lints:
     dependency: transitive
     description:
@@ -200,6 +232,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.3"
+  pointycastle:
+    dependency: transitive
+    description:
+      name: pointycastle
+      sha256: "7c1e5f0d23c9016c5bbd8b1473d0d3fb3fc851b876046039509e18e0c7485f2c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.7.3"
   provider:
     dependency: transitive
     description:

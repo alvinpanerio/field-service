@@ -145,28 +145,6 @@ def get_task():
         ),
     }
 
-    # worksheet = (
-    #     query(
-    #         session["uid"],
-    #         session["password"],
-    #         "x_project_task_worksheet_template_2",
-    #         "search_read",
-    #         [[["x_project_task_id", "=", id]]],
-    #         [
-    #             "x_name",
-    #             "x_project_task_id",
-    #             "x_manufacturer",
-    #             "x_model",
-    #             "x_serial_number",
-    #             "x_intervention_type",
-    #             "x_description",
-    #             "x_checkbox",
-    #             "x_date",
-    #             "x_worker_signature",
-    #         ],
-    #     ),
-    # )
-
     return jsonify(response), 200
 
 
