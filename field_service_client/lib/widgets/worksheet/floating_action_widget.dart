@@ -61,8 +61,27 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                     ),
                     height: MediaQuery.of(context).size.height,
                     color: Colors.white,
-                    child: worksheet.isNotEmpty
+                    child: worksheet.isEmpty
                         ? Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              FieldsWidget(
+                                isEmpty: worksheet.isEmpty,
+                                pathId: widget.state.params["id"]!,
+                                worksheetId: "",
+                                name: fieldsValue.worksheetNameController,
+                                manufacturer:
+                                    fieldsValue.worksheetManufacturerController,
+                                serialNo:
+                                    fieldsValue.worksheetSerialNoController,
+                                description:
+                                    fieldsValue.worksheetDescriptionController,
+                                interventionType: fieldsValue.interventionType,
+                                isChecked: fieldsValue.isChecked,
+                              )
+                            ],
+                          )
+                        : Column(
                             mainAxisSize: MainAxisSize.max,
                             children: <Widget>[
                               ListView.builder(
@@ -71,47 +90,30 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                 itemCount: worksheet.length,
                                 itemBuilder: (v, i) {
                                   fieldsValue.setControllers(
-                                    worksheet[i]["x_name"].toString(),
-                                    worksheet[i]["x_manufacturer"] == false
-                                        ? worksheet[i]["x_manufacturer"]
-                                            .toString()
-                                        : worksheet[i]["x_manufacturer"][1]
-                                            .toString(),
-                                    worksheet[i]["x_serial_number"].toString(),
-                                    worksheet[i]["x_description"].toString(),
+                                    worksheet[i]["x_name"],
+                                    worksheet[i]["x_manufacturer"],
+                                    worksheet[i]["x_serial_number"],
+                                    worksheet[i]["x_intervention_type"],
+                                    worksheet[i]["x_description"],
+                                    worksheet[i]["x_checkbox"],
                                   );
                                   return FieldsWidget(
-                                      worksheetNameController:
-                                          fieldsValue.worksheetNameController,
-                                      worksheetManufacturerController:
-                                          fieldsValue
-                                              .worksheetManufacturerController,
-                                      worksheetSerialNoController: fieldsValue
-                                          .worksheetSerialNoController,
-                                      interventionTypes:
-                                          fieldsValue.interventionTypes,
-                                      worksheetDescriptionController:
-                                          fieldsValue
-                                              .worksheetDescriptionController);
+                                    isEmpty: worksheet.isEmpty,
+                                    pathId: widget.state.params["id"]!,
+                                    worksheetId: worksheet[i]["id"].toString(),
+                                    name: fieldsValue.worksheetNameController,
+                                    manufacturer: fieldsValue
+                                        .worksheetManufacturerController,
+                                    serialNo:
+                                        fieldsValue.worksheetSerialNoController,
+                                    description: fieldsValue
+                                        .worksheetDescriptionController,
+                                    interventionType:
+                                        fieldsValue.interventionType,
+                                    isChecked: fieldsValue.isChecked,
+                                  );
                                 },
                               ),
-                            ],
-                          )
-                        : Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              FieldsWidget(
-                                worksheetNameController:
-                                    fieldsValue.worksheetNameController,
-                                worksheetManufacturerController:
-                                    fieldsValue.worksheetManufacturerController,
-                                worksheetSerialNoController:
-                                    fieldsValue.worksheetSerialNoController,
-                                interventionTypes:
-                                    fieldsValue.interventionTypes,
-                                worksheetDescriptionController:
-                                    fieldsValue.worksheetDescriptionController,
-                              )
                             ],
                           ),
                   );

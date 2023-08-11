@@ -179,6 +179,58 @@ def get_worksheet():
     return jsonify(response), 200
 
 
+@app.route("/update-worksheet", methods=["POST"])
+def set_worksheet():
+    isAuth()
+
+    id = int(request.args["id"])
+
+    response = update(
+        session["uid"],
+        session["password"],
+        "x_project_task_worksheet_template_2",
+        [
+            [id],
+            {
+                "x_name": request.json.get("name"),
+                "x_serial_number": request.json.get("serial_no"),
+                "x_intervention_type": request.json.get("intervention_type"),
+                "x_description": request.json.get("description"),
+                "x_checkbox": request.json.get("is_checked"),
+            },
+        ],
+    )
+
+    return jsonify(response), 200
+
+
+@app.route("/create-worksheet", methods=["POST"])
+def create_worksheet():
+    isAuth()
+
+    id = int(request.args["id"])
+
+    response = create(
+        session["uid"],
+        session["password"],
+        "x_project_task_worksheet_template_2",
+        [
+            {
+                "x_name": request.json.get("name"),
+                "x_project_task_id": id,
+                # "x_manufacturer": request.json.get("manufacturer"),
+                "x_serial_number": request.json.get("serial_no"),
+                "x_intervention_type": request.json.get("intervention_type"),
+                "x_description": request.json.get("description"),
+                "x_checkbox": request.json.get("is_checked"),
+                # "x_date": request.json.get("date"),
+            }
+        ],
+    )
+
+    return jsonify(response), 200
+
+
 def query(uid, password, model, method, condition, fields):
     models = xmlrpc.client.ServerProxy(
         "{}/xmlrpc/2/object".format(
@@ -193,6 +245,40 @@ def query(uid, password, model, method, condition, fields):
         method,
         condition,
         {"fields": fields},
+    )
+
+
+def create(uid, password, model, fields):
+    models = xmlrpc.client.ServerProxy(
+        "{}/xmlrpc/2/object".format(
+            environ.get("URL"),
+        ),
+    )
+
+    return models.execute_kw(
+        environ.get("DB"),
+        uid,
+        password,
+        model,
+        "create",
+        fields,
+    )
+
+
+def update(uid, password, model, fields):
+    models = xmlrpc.client.ServerProxy(
+        "{}/xmlrpc/2/object".format(
+            environ.get("URL"),
+        ),
+    )
+
+    return models.execute_kw(
+        environ.get("DB"),
+        uid,
+        password,
+        model,
+        "write",
+        fields,
     )
 
 

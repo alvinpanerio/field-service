@@ -19,11 +19,23 @@ class FieldsValue {
   TextEditingController worksheetDescriptionController =
       TextEditingController();
 
-  void setControllers(name, manufacturer, serialNo, description) {
-    worksheetNameController.text = name;
-    worksheetManufacturerController.text = manufacturer;
-    worksheetSerialNoController.text = serialNo;
-    worksheetDescriptionController.text = description;
+  String interventionType = "";
+
+  bool isChecked = false;
+
+  DateTime? date;
+
+  void setControllers(
+      name, manufacturer, serialNo, intervention, description, isCheck) {
+    worksheetNameController.text = name == false ? "" : name.toString();
+    worksheetManufacturerController.text =
+        manufacturer == false ? "" : manufacturer[1].toString();
+    worksheetSerialNoController.text =
+        serialNo == false ? "" : serialNo.toString();
+    interventionType = intervention == false ? "" : intervention.toString();
+    worksheetDescriptionController.text =
+        description == false ? "" : description.toString();
+    isChecked = isCheck;
   }
 
   String convertInterventionTypeType(String value) {

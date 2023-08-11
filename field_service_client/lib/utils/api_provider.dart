@@ -86,4 +86,60 @@ class ApiProvider {
 
     return response;
   }
+
+  Future setWorksheet(
+    String id,
+    String name,
+    String manufacturer,
+    String serialNo,
+    String interventionType,
+    String description,
+    bool isChecked,
+    DateTime? date,
+  ) async {
+    final rawResponse = await _post(
+      "/update-worksheet?id=$id",
+      {
+        'name': name,
+        'manufacturer': manufacturer,
+        'serial_no': serialNo,
+        'intervention_type': interventionType,
+        'description': description,
+        'is_checked': isChecked,
+        'date': date,
+      },
+    );
+
+    bool response = jsonDecode(rawResponse.toString());
+
+    return response;
+  }
+
+  Future createWorksheet(
+    String id,
+    String name,
+    String manufacturer,
+    String serialNo,
+    String interventionType,
+    String description,
+    bool? isChecked,
+    DateTime? date,
+  ) async {
+    final rawResponse = await _post(
+      "/create-worksheet?id=$id",
+      {
+        'name': name,
+        'manufacturer': manufacturer,
+        'serial_no': serialNo,
+        'intervention_type': interventionType,
+        'description': description,
+        'is_checked': isChecked,
+        'date': date,
+      },
+    );
+
+    int response = jsonDecode(rawResponse.toString());
+
+    return response;
+  }
 }

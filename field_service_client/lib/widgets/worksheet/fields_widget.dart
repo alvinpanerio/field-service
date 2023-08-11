@@ -1,33 +1,55 @@
+import 'package:field_service_client/utils/api_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'fields_value.dart';
 
 class FieldsWidget extends StatefulWidget {
   const FieldsWidget(
-      {required this.worksheetNameController,
-      required this.worksheetManufacturerController,
-      required this.worksheetSerialNoController,
-      required this.interventionTypes,
-      required this.worksheetDescriptionController,
+      {required this.isEmpty,
+      required this.pathId,
+      required this.worksheetId,
+      required this.name,
+      required this.manufacturer,
+      required this.serialNo,
+      required this.description,
+      required this.interventionType,
+      required this.isChecked,
       Key? key})
       : super(key: key);
 
-  final TextEditingController worksheetNameController;
-  final TextEditingController worksheetManufacturerController;
-  final TextEditingController worksheetSerialNoController;
-  final TextEditingController worksheetDescriptionController;
+  final String pathId;
+  final String worksheetId;
+  final bool isEmpty;
 
-  final List<String> interventionTypes;
+  final TextEditingController name;
+  final TextEditingController manufacturer;
+  final TextEditingController serialNo;
+  final TextEditingController description;
+
+  final String interventionType;
+  final bool isChecked;
 
   @override
   State<FieldsWidget> createState() => _FieldsWidgetState();
 }
 
 class _FieldsWidgetState extends State<FieldsWidget> {
+  ApiProvider apiProvider = ApiProvider();
+
   FieldsValue fieldsValue = FieldsValue();
-  String interventionType = "";
+
   bool isChecked = false;
-  DateTime? date;
+
+  String interventionType = "";
+
+  @override
+  void initState() {
+    if (!widget.isEmpty) {
+      isChecked = widget.isChecked;
+      interventionType = widget.interventionType;
+    }
+    super.initState();
+  }
 
   void openCalendarPicker() async {
     final response = await showDatePicker(
@@ -37,8 +59,34 @@ class _FieldsWidgetState extends State<FieldsWidget> {
             DateTime.now().year - 1, DateTime.now().month, DateTime.now().day),
         lastDate: DateTime.now());
     setState(() {
-      date = response;
+      fieldsValue.date = response;
     });
+  }
+
+  void createWorksheetInformation() async {
+    final response = await apiProvider.createWorksheet(
+      widget.pathId,
+      widget.name.text,
+      widget.manufacturer.text,
+      widget.serialNo.text,
+      interventionType,
+      widget.description.text,
+      isChecked,
+      fieldsValue.date,
+    );
+  }
+
+  void updateWorksheetInformation() async {
+    final response = await apiProvider.setWorksheet(
+      widget.worksheetId,
+      widget.name.text,
+      widget.manufacturer.text,
+      widget.serialNo.text,
+      interventionType,
+      widget.description.text,
+      isChecked,
+      fieldsValue.date,
+    );
   }
 
   @override
@@ -47,7 +95,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
-          controller: widget.worksheetNameController,
+          controller: widget.name,
           obscureText: false,
           decoration: const InputDecoration(
             labelText: "Name",
@@ -58,7 +106,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
           height: 15,
         ),
         TextField(
-          controller: widget.worksheetManufacturerController,
+          controller: widget.manufacturer,
           obscureText: false,
           decoration: const InputDecoration(
             labelText: "Manufacturer",
@@ -69,7 +117,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
           height: 15,
         ),
         TextField(
-          controller: widget.worksheetSerialNoController,
+          controller: widget.serialNo,
           obscureText: false,
           decoration: const InputDecoration(
             labelText: "Serial No.",
@@ -89,16 +137,16 @@ class _FieldsWidgetState extends State<FieldsWidget> {
                   ListView.builder(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
-                    itemCount: widget.interventionTypes.length,
+                    itemCount: fieldsValue.interventionTypes.length,
                     itemBuilder: (context, i) {
                       return ListTile(
                         title: Text(
                           fieldsValue.convertInterventionTypeType(
-                            widget.interventionTypes[i],
+                            fieldsValue.interventionTypes[i],
                           ),
                         ),
                         leading: Radio(
-                          value: widget.interventionTypes[i],
+                          value: fieldsValue.interventionTypes[i],
                           groupValue: interventionType,
                           onChanged: (value) {
                             setState(() {
@@ -118,7 +166,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
           height: 15,
         ),
         TextField(
-          controller: widget.worksheetDescriptionController,
+          controller: widget.description,
           obscureText: false,
           decoration: const InputDecoration(
             labelText: "Description",
@@ -173,7 +221,9 @@ class _FieldsWidgetState extends State<FieldsWidget> {
                         ],
                       ),
                       Text(
-                        date == null ? "Choose Date" : date.toString(),
+                        fieldsValue.date == null
+                            ? "Choose Date"
+                            : fieldsValue.date.toString(),
                       ),
                     ],
                   ),
@@ -181,6 +231,16 @@ class _FieldsWidgetState extends State<FieldsWidget> {
               ),
             ),
           ),
+        ),
+        FilledButton(
+          onPressed: () {
+            if (widget.isEmpty) {
+              createWorksheetInformation();
+            } else {
+              updateWorksheetInformation();
+            }
+          },
+          child: const Text("Save"),
         )
       ],
     );
