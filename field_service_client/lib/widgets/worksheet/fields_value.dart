@@ -1,3 +1,7 @@
+import 'dart:collection';
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -29,8 +33,10 @@ class FieldsValue {
 
   String date = "";
 
+  String signature = "";
+
   void setControllers(name, manufacturer, model, serialNo, intervention,
-      description, isCheck, dateValue) {
+      description, isCheck, dateValue, signatureValue) {
     worksheetNameController.text = name == false ? "" : name.toString();
     worksheetManufacturer = manufacturer == false ? [0, ""] : manufacturer;
     worksheetModel = model == false ? [0, ""] : model;
@@ -41,6 +47,7 @@ class FieldsValue {
         description == false ? "" : description.toString();
     isChecked = isCheck;
     date = dateValue == false ? "" : dateValue;
+    signature = signatureValue == false ? "" : signatureValue;
   }
 
   String convertInterventionTypeType(String value) {

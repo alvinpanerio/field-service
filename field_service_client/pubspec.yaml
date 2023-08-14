@@ -16,6 +16,7 @@ dependencies:
   basic_utils: ^5.6.1
   google_fonts: ^5.1.0
   intl: ^0.18.1
+  syncfusion_flutter_signaturepad: ^22.2.8
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,7 +1,13 @@
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:field_service_client/utils/api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
 import '../../bloc/odoo_models/odoo_models_bloc.dart';
 import 'fields_value.dart';
@@ -19,6 +25,7 @@ class FieldsWidget extends StatefulWidget {
       required this.interventionType,
       required this.isChecked,
       required this.date,
+      required this.signature,
       Key? key})
       : super(key: key);
 
@@ -37,6 +44,8 @@ class FieldsWidget extends StatefulWidget {
 
   String date;
 
+  String signature;
+
   @override
   State<FieldsWidget> createState() => _FieldsWidgetState();
 }
@@ -52,6 +61,8 @@ class _FieldsWidgetState extends State<FieldsWidget> {
 
   TextEditingController manufacturerController = TextEditingController();
   TextEditingController modelController = TextEditingController();
+
+  final GlobalKey<SfSignaturePadState> signatureGlobalKey = GlobalKey();
 
   @override
   void initState() {
@@ -81,7 +92,20 @@ class _FieldsWidgetState extends State<FieldsWidget> {
     setState(() {
       widget.date = DateFormat('yyyy-MM-dd').format(response!);
     });
-    print(widget.date);
+  }
+
+  Uint8List _convertBase64Image(String base64String) {
+    return const Base64Decoder().convert(base64String.split(',').last);
+  }
+
+  void _saveSignature() async {
+    final data =
+        await signatureGlobalKey.currentState!.toImage(pixelRatio: 3.0);
+    final bytes = await data.toByteData(format: ui.ImageByteFormat.png);
+
+    setState(() {
+      widget.signature = base64.encode(bytes!.buffer.asUint8List()).toString();
+    });
   }
 
   void createWorksheetInformation() async {
@@ -254,6 +278,66 @@ class _FieldsWidgetState extends State<FieldsWidget> {
               const SizedBox(
                 height: 15,
               ),
+              Column(
+                children: [
+                  widget.signature.isNotEmpty
+                      ? Image.memory(
+                          _convertBase64Image(widget.signature.toString()),
+                          gaplessPlayback: true,
+                        )
+                      : const SizedBox.shrink(),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  widget.signature.isNotEmpty
+                      ? FilledButton.tonal(
+                          onPressed: () => showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                  title: const Text('Change Signature'),
+                                  content: SizedBox(
+                                    height: 310,
+                                    child: Column(
+                                      children: [
+                                        const Text(
+                                            "Please draw your signature on the space provided!"),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        SfSignaturePad(
+                                          key: signatureGlobalKey,
+                                          backgroundColor: Colors.white,
+                                          strokeColor: Colors.black,
+                                          minimumStrokeWidth: 1.0,
+                                          maximumStrokeWidth: 4.0,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () => context.pop(),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        _saveSignature();
+                                        context.pop();
+                                      },
+                                      child: const Text('Save'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          child: const Text("Change signature"))
+                      : FilledButton.tonal(
+                          onPressed: () {},
+                          child: const Text("Create a signature")),
+                ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
               FilledButton.tonal(
                 onPressed: openCalendarPicker,
                 child: SizedBox(
@@ -303,6 +387,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
                   } else {
                     updateWorksheetInformation();
                   }
+                  context.pop();
                 },
                 child: const Text("Save"),
               )

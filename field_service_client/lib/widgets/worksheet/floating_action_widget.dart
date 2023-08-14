@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:field_service_client/bloc/odoo_models/odoo_models_bloc.dart';
 import 'package:field_service_client/utils/api_provider.dart';
 import 'package:field_service_client/widgets/worksheet/fields_value.dart';
@@ -105,6 +103,7 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                           fieldsValue.interventionType,
                                       isChecked: fieldsValue.isChecked,
                                       date: fieldsValue.date,
+                                      signature: fieldsValue.signature,
                                     )
                                   ],
                                 ),
@@ -118,7 +117,6 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                       shrinkWrap: true,
                                       itemCount: worksheet.length,
                                       itemBuilder: (v, i) {
-                                       
                                         fieldsValue.setControllers(
                                           worksheet[i]["x_name"],
                                           worksheet[i]["x_manufacturer"],
@@ -128,6 +126,7 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                           worksheet[i]["x_description"],
                                           worksheet[i]["x_checkbox"],
                                           worksheet[i]["x_date"],
+                                          worksheet[i]["x_worker_signature"],
                                         );
                                         return FieldsWidget(
                                           isEmpty: worksheet.isEmpty,
@@ -147,6 +146,7 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                               fieldsValue.interventionType,
                                           isChecked: fieldsValue.isChecked,
                                           date: fieldsValue.date,
+                                          signature: fieldsValue.signature,
                                         );
                                       },
                                     ),
