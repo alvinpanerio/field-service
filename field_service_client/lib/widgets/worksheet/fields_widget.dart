@@ -1,6 +1,8 @@
 import 'package:field_service_client/utils/api_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bloc/odoo_models/odoo_models_bloc.dart';
 import 'fields_value.dart';
 
 class FieldsWidget extends StatefulWidget {
@@ -22,7 +24,7 @@ class FieldsWidget extends StatefulWidget {
   final bool isEmpty;
 
   final TextEditingController name;
-  final TextEditingController manufacturer;
+  final List<dynamic> manufacturer;
   final TextEditingController serialNo;
   final TextEditingController description;
 
@@ -42,11 +44,19 @@ class _FieldsWidgetState extends State<FieldsWidget> {
 
   String interventionType = "";
 
+  TextEditingController manufacturerController = TextEditingController();
+
   @override
   void initState() {
+    if (widget.manufacturer.isEmpty) {
+      widget.manufacturer.add(0);
+      widget.manufacturer.add("");
+    }
+
     if (!widget.isEmpty) {
       isChecked = widget.isChecked;
       interventionType = widget.interventionType;
+      manufacturerController.text = widget.manufacturer[1].toString();
     }
     super.initState();
   }
@@ -67,7 +77,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
     final response = await apiProvider.createWorksheet(
       widget.pathId,
       widget.name.text,
-      widget.manufacturer.text,
+      widget.manufacturer,
       widget.serialNo.text,
       interventionType,
       widget.description.text,
@@ -80,7 +90,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
     final response = await apiProvider.setWorksheet(
       widget.worksheetId,
       widget.name.text,
-      widget.manufacturer.text,
+      widget.manufacturer,
       widget.serialNo.text,
       interventionType,
       widget.description.text,
@@ -91,158 +101,177 @@ class _FieldsWidgetState extends State<FieldsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: widget.name,
-          obscureText: false,
-          decoration: const InputDecoration(
-            labelText: "Name",
-            border: OutlineInputBorder(),
-          ),
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        TextField(
-          controller: widget.manufacturer,
-          obscureText: false,
-          decoration: const InputDecoration(
-            labelText: "Manufacturer",
-            border: OutlineInputBorder(),
-          ),
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        TextField(
-          controller: widget.serialNo,
-          obscureText: false,
-          decoration: const InputDecoration(
-            labelText: "Serial No.",
-            border: OutlineInputBorder(),
-          ),
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        Row(
-          children: [
-            const Text("Intervention Type"),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
+    return BlocBuilder<OdooModelsBloc, OdooModelsState>(
+      builder: (context, state) {
+        if (state is OdooModelsLoaded) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: widget.name,
+                obscureText: false,
+                decoration: const InputDecoration(
+                  labelText: "Name",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              DropdownMenu(
+                controller: manufacturerController,
+                label: const Text('Manufacturer'),
+                dropdownMenuEntries:
+                    state.partners.map<DropdownMenuEntry<String>>((value) {
+                  return DropdownMenuEntry<String>(
+                      label: value["commercial_partner_id"][1],
+                      value:
+                          "${value['id']},${value['commercial_partner_id'][1]}");
+                }).toList(),
+                onSelected: (String? value) {
+                  print(widget.manufacturer);
+
+                  setState(() {
+                    List<dynamic> valueArray = value!.split(',');
+
+                    widget.manufacturer[0] = int.parse(valueArray[0]);
+                    widget.manufacturer[1] = valueArray[1];
+                  });
+                  print(widget.manufacturer);
+                },
+              ),
+              TextField(
+                controller: widget.serialNo,
+                obscureText: false,
+                decoration: const InputDecoration(
+                  labelText: "Serial No.",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Row(
                 children: [
-                  ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: fieldsValue.interventionTypes.length,
-                    itemBuilder: (context, i) {
-                      return ListTile(
-                        title: Text(
-                          fieldsValue.convertInterventionTypeType(
-                            fieldsValue.interventionTypes[i],
-                          ),
-                        ),
-                        leading: Radio(
-                          value: fieldsValue.interventionTypes[i],
-                          groupValue: interventionType,
-                          onChanged: (value) {
-                            setState(() {
-                              interventionType = value.toString();
-                            });
+                  const Text("Intervention Type"),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: fieldsValue.interventionTypes.length,
+                          itemBuilder: (context, i) {
+                            return ListTile(
+                              title: Text(
+                                fieldsValue.convertInterventionTypeType(
+                                  fieldsValue.interventionTypes[i],
+                                ),
+                              ),
+                              leading: Radio(
+                                value: fieldsValue.interventionTypes[i],
+                                groupValue: interventionType,
+                                onChanged: (value) {
+                                  setState(() {
+                                    interventionType = value.toString();
+                                  });
+                                },
+                              ),
+                            );
                           },
-                        ),
-                      );
-                    },
+                        )
+                      ],
+                    ),
                   )
                 ],
               ),
-            )
-          ],
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        TextField(
-          controller: widget.description,
-          obscureText: false,
-          decoration: const InputDecoration(
-            labelText: "Description",
-            border: OutlineInputBorder(),
-          ),
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        const Text(""),
-        CheckboxListTile(
-          value: isChecked,
-          title: const Text(
-              "I hereby certify that this device meets the requirements of an acceptable device at the time of testing."),
-          onChanged: (bool? value) {
-            setState(() {
-              isChecked = value!;
-            });
-          },
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        FilledButton.tonal(
-          onPressed: openCalendarPicker,
-          child: SizedBox(
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.calendar_month_rounded,
-                    size: 20,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Row(
-                        children: [
-                          Text(
-                            "DATE",
-                            style: TextStyle(fontSize: 10),
-                          ),
-                          Icon(
-                            Icons.arrow_drop_down_rounded,
-                            size: 15,
-                          ),
-                        ],
-                      ),
-                      Text(
-                        fieldsValue.date == null
-                            ? "Choose Date"
-                            : fieldsValue.date.toString(),
-                      ),
-                    ],
-                  ),
-                ],
+              const SizedBox(
+                height: 15,
               ),
-            ),
-          ),
-        ),
-        FilledButton(
-          onPressed: () {
-            if (widget.isEmpty) {
-              createWorksheetInformation();
-            } else {
-              updateWorksheetInformation();
-            }
-          },
-          child: const Text("Save"),
-        )
-      ],
+              TextField(
+                controller: widget.description,
+                obscureText: false,
+                decoration: const InputDecoration(
+                  labelText: "Description",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              const Text(""),
+              CheckboxListTile(
+                value: isChecked,
+                title: const Text(
+                    "I hereby certify that this device meets the requirements of an acceptable device at the time of testing."),
+                onChanged: (bool? value) {
+                  setState(() {
+                    isChecked = value!;
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              FilledButton.tonal(
+                onPressed: openCalendarPicker,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.calendar_month_rounded,
+                          size: 20,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Row(
+                              children: [
+                                Text(
+                                  "DATE",
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                                Icon(
+                                  Icons.arrow_drop_down_rounded,
+                                  size: 15,
+                                ),
+                              ],
+                            ),
+                            Text(
+                              fieldsValue.date == null
+                                  ? "Choose Date"
+                                  : fieldsValue.date.toString(),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              FilledButton(
+                onPressed: () {
+                  if (widget.isEmpty) {
+                    createWorksheetInformation();
+                  } else {
+                    updateWorksheetInformation();
+                  }
+                },
+                child: const Text("Save"),
+              )
+            ],
+          );
+        } else {
+          return const Text("went wrong");
+        }
+      },
     );
   }
 }

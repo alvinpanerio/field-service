@@ -90,7 +90,7 @@ class ApiProvider {
   Future setWorksheet(
     String id,
     String name,
-    String manufacturer,
+    List<dynamic> manufacturer,
     String serialNo,
     String interventionType,
     String description,
@@ -118,7 +118,7 @@ class ApiProvider {
   Future createWorksheet(
     String id,
     String name,
-    String manufacturer,
+    List<dynamic> manufacturer,
     String serialNo,
     String interventionType,
     String description,
@@ -139,6 +139,16 @@ class ApiProvider {
     );
 
     int response = jsonDecode(rawResponse.toString());
+
+    return response;
+  }
+
+  Future getModels() async {
+    final rawResponse = await _get(
+      "/models",
+    );
+
+    Map<String, dynamic> response = jsonDecode(rawResponse.toString());
 
     return response;
   }

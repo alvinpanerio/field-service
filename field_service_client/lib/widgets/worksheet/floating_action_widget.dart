@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:field_service_client/bloc/odoo_models/odoo_models_bloc.dart';
 import 'package:field_service_client/utils/api_provider.dart';
 import 'package:field_service_client/widgets/worksheet/fields_value.dart';
 import 'package:flutter/material.dart';
@@ -21,16 +24,31 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<WorksheetBloc, WorksheetState>(
-      listener: (context, state) {},
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<WorksheetBloc, WorksheetState>(
+          listener: (context, state) {},
+        ),
+        BlocListener<OdooModelsBloc, OdooModelsState>(
+          listener: (context, state) {},
+        ),
+      ],
       child: FloatingActionButton.extended(
         onPressed: () async {
-          final response =
+          final worksheetResponse =
               await apiProvider.getWorksheet(widget.state.params["id"]!);
+
           // ignore: use_build_context_synchronously
           context
               .read<WorksheetBloc>()
-              .add(GetWorksheet(worksheet: response["worksheet"]));
+              .add(GetWorksheet(worksheet: worksheetResponse["worksheet"]));
+
+          final modelsResponse = await apiProvider.getModels();
+
+          // ignore: use_build_context_synchronously
+
+          context.read<OdooModelsBloc>().add(
+              GetOdooModels(partners: modelsResponse["models"]["partners"]));
 
           // ignore: use_build_context_synchronously
           showModalBottomSheet(
@@ -70,8 +88,7 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                 pathId: widget.state.params["id"]!,
                                 worksheetId: "",
                                 name: fieldsValue.worksheetNameController,
-                                manufacturer:
-                                    fieldsValue.worksheetManufacturerController,
+                                manufacturer: fieldsValue.worksheetManufacturer,
                                 serialNo:
                                     fieldsValue.worksheetSerialNoController,
                                 description:
@@ -92,6 +109,8 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                   fieldsValue.setControllers(
                                     worksheet[i]["x_name"],
                                     worksheet[i]["x_manufacturer"],
+                                    // List<dynamic>.from(json.decode(
+                                    //     worksheet[i]["x_manufacturer"])),
                                     worksheet[i]["x_serial_number"],
                                     worksheet[i]["x_intervention_type"],
                                     worksheet[i]["x_description"],
@@ -102,8 +121,8 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                     pathId: widget.state.params["id"]!,
                                     worksheetId: worksheet[i]["id"].toString(),
                                     name: fieldsValue.worksheetNameController,
-                                    manufacturer: fieldsValue
-                                        .worksheetManufacturerController,
+                                    manufacturer:
+                                        fieldsValue.worksheetManufacturer,
                                     serialNo:
                                         fieldsValue.worksheetSerialNoController,
                                     description: fieldsValue

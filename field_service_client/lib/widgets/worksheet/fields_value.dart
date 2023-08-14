@@ -12,12 +12,15 @@ class FieldsValue {
   final List<String> interventionTypes;
 
   TextEditingController worksheetNameController = TextEditingController();
-  TextEditingController worksheetManufacturerController =
-      TextEditingController();
+
+  List<dynamic> worksheetManufacturer = [];
+
   TextEditingController worksheetSerialNoController = TextEditingController();
   // TextEditingController worksheetModelController = TextEditingController();
   TextEditingController worksheetDescriptionController =
       TextEditingController();
+
+  List<Map<String, dynamic>> manufacturers = [];
 
   String interventionType = "";
 
@@ -28,8 +31,7 @@ class FieldsValue {
   void setControllers(
       name, manufacturer, serialNo, intervention, description, isCheck) {
     worksheetNameController.text = name == false ? "" : name.toString();
-    worksheetManufacturerController.text =
-        manufacturer == false ? "" : manufacturer[1].toString();
+    worksheetManufacturer = manufacturer == false ? [0, ""] : manufacturer;
     worksheetSerialNoController.text =
         serialNo == false ? "" : serialNo.toString();
     interventionType = intervention == false ? "" : intervention.toString();

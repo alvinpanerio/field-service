@@ -1,3 +1,4 @@
+import 'package:field_service_client/bloc/odoo_models/odoo_models_bloc.dart';
 import 'package:field_service_client/bloc/service/service_bloc.dart';
 import 'package:field_service_client/bloc/worksheet/worksheet_bloc.dart';
 import 'package:field_service_client/routes/routes.dart';
@@ -38,6 +39,12 @@ class App extends StatelessWidget {
           create: (context) => TaskBloc()
             ..add(
               const GetTask(),
+            ),
+        ),
+        BlocProvider(
+          create: (context) => OdooModelsBloc()
+            ..add(
+              const GetOdooModels(),
             ),
         )
       ],
