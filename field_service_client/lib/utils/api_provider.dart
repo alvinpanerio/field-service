@@ -13,6 +13,8 @@ class ApiProvider {
         "${dotenv.env['API_URL']}" "$res",
       );
 
+      print(response);
+
       return response;
     } catch (err) {
       return;
@@ -27,6 +29,9 @@ class ApiProvider {
         "${dotenv.env['API_URL']}" "$res",
         data: data,
       );
+
+      print(response);
+
       return response;
     } catch (err) {
       return err;
@@ -96,7 +101,7 @@ class ApiProvider {
     String interventionType,
     String description,
     bool isChecked,
-    DateTime? date,
+    String date,
   ) async {
     final rawResponse = await _post(
       "/update-worksheet?id=$id",
@@ -126,7 +131,7 @@ class ApiProvider {
     String interventionType,
     String description,
     bool? isChecked,
-    DateTime? date,
+    String date,
   ) async {
     final rawResponse = await _post(
       "/create-worksheet?id=$id",

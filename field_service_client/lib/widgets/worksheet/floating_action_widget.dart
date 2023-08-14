@@ -72,70 +72,89 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                   List<dynamic> worksheet = state.worksheet;
                   // print(worksheet);
 
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 20,
-                    ),
-                    height: MediaQuery.of(context).size.height,
-                    color: Colors.white,
-                    child: worksheet.isEmpty
-                        ? Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              FieldsWidget(
-                                isEmpty: worksheet.isEmpty,
-                                pathId: widget.state.params["id"]!,
-                                worksheetId: "",
-                                name: fieldsValue.worksheetNameController,
-                                manufacturer: fieldsValue.worksheetManufacturer,
-                                model: fieldsValue.worksheetModel,
-                                serialNo:
-                                    fieldsValue.worksheetSerialNoController,
-                                description:
-                                    fieldsValue.worksheetDescriptionController,
-                                interventionType: fieldsValue.interventionType,
-                                isChecked: fieldsValue.isChecked,
+                  return DraggableScrollableSheet(
+                    expand: false,
+                    initialChildSize: 0.6,
+                    maxChildSize: 1.0,
+                    minChildSize: 0.6,
+                    builder: (context, controller) => SingleChildScrollView(
+                      controller: controller,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 20,
+                        ),
+                        child: worksheet.isEmpty
+                            ? Flexible(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    FieldsWidget(
+                                      isEmpty: worksheet.isEmpty,
+                                      pathId: widget.state.params["id"]!,
+                                      worksheetId: "",
+                                      name: fieldsValue.worksheetNameController,
+                                      manufacturer:
+                                          fieldsValue.worksheetManufacturer,
+                                      model: fieldsValue.worksheetModel,
+                                      serialNo: fieldsValue
+                                          .worksheetSerialNoController,
+                                      description: fieldsValue
+                                          .worksheetDescriptionController,
+                                      interventionType:
+                                          fieldsValue.interventionType,
+                                      isChecked: fieldsValue.isChecked,
+                                      date: fieldsValue.date,
+                                    )
+                                  ],
+                                ),
                               )
-                            ],
-                          )
-                        : Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                itemCount: worksheet.length,
-                                itemBuilder: (v, i) {
-                                  fieldsValue.setControllers(
-                                    worksheet[i]["x_name"],
-                                    worksheet[i]["x_manufacturer"],
-                                    worksheet[i]["x_model"],
-                                    worksheet[i]["x_serial_number"],
-                                    worksheet[i]["x_intervention_type"],
-                                    worksheet[i]["x_description"],
-                                    worksheet[i]["x_checkbox"],
-                                  );
-                                  return FieldsWidget(
-                                    isEmpty: worksheet.isEmpty,
-                                    pathId: widget.state.params["id"]!,
-                                    worksheetId: worksheet[i]["id"].toString(),
-                                    name: fieldsValue.worksheetNameController,
-                                    manufacturer:
-                                        fieldsValue.worksheetManufacturer,
-                                    model: fieldsValue.worksheetModel,
-                                    serialNo:
-                                        fieldsValue.worksheetSerialNoController,
-                                    description: fieldsValue
-                                        .worksheetDescriptionController,
-                                    interventionType:
-                                        fieldsValue.interventionType,
-                                    isChecked: fieldsValue.isChecked,
-                                  );
-                                },
+                            : Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Flexible(
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      itemCount: worksheet.length,
+                                      itemBuilder: (v, i) {
+                                       
+                                        fieldsValue.setControllers(
+                                          worksheet[i]["x_name"],
+                                          worksheet[i]["x_manufacturer"],
+                                          worksheet[i]["x_model"],
+                                          worksheet[i]["x_serial_number"],
+                                          worksheet[i]["x_intervention_type"],
+                                          worksheet[i]["x_description"],
+                                          worksheet[i]["x_checkbox"],
+                                          worksheet[i]["x_date"],
+                                        );
+                                        return FieldsWidget(
+                                          isEmpty: worksheet.isEmpty,
+                                          pathId: widget.state.params["id"]!,
+                                          worksheetId:
+                                              worksheet[i]["id"].toString(),
+                                          name: fieldsValue
+                                              .worksheetNameController,
+                                          manufacturer:
+                                              fieldsValue.worksheetManufacturer,
+                                          model: fieldsValue.worksheetModel,
+                                          serialNo: fieldsValue
+                                              .worksheetSerialNoController,
+                                          description: fieldsValue
+                                              .worksheetDescriptionController,
+                                          interventionType:
+                                              fieldsValue.interventionType,
+                                          isChecked: fieldsValue.isChecked,
+                                          date: fieldsValue.date,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                      ),
+                    ),
                   );
                 } else {
                   return const Text("went wrong");

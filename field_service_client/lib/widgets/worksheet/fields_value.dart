@@ -27,10 +27,10 @@ class FieldsValue {
 
   bool isChecked = false;
 
-  DateTime? date;
+  String date = "";
 
-  void setControllers(
-      name, manufacturer, model, serialNo, intervention, description, isCheck) {
+  void setControllers(name, manufacturer, model, serialNo, intervention,
+      description, isCheck, dateValue) {
     worksheetNameController.text = name == false ? "" : name.toString();
     worksheetManufacturer = manufacturer == false ? [0, ""] : manufacturer;
     worksheetModel = model == false ? [0, ""] : model;
@@ -40,6 +40,7 @@ class FieldsValue {
     worksheetDescriptionController.text =
         description == false ? "" : description.toString();
     isChecked = isCheck;
+    date = dateValue == false ? "" : dateValue;
   }
 
   String convertInterventionTypeType(String value) {

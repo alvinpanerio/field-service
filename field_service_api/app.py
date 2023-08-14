@@ -199,6 +199,7 @@ def set_worksheet():
                 "x_intervention_type": request.json.get("intervention_type"),
                 "x_description": request.json.get("description"),
                 "x_checkbox": request.json.get("is_checked"),
+                "x_date": request.json.get("date"),
             },
         ],
     )
@@ -226,7 +227,7 @@ def create_worksheet():
                 "x_intervention_type": request.json.get("intervention_type"),
                 "x_description": request.json.get("description"),
                 "x_checkbox": request.json.get("is_checked"),
-                # "x_date": request.json.get("date"),
+                "x_date": request.json.get("date"),
             }
         ],
     )
@@ -255,8 +256,6 @@ def get_models():
         [],
         ["product_variant_id"],
     )
-
-    print(products)
 
     response = {
         "models": {

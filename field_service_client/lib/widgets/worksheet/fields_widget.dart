@@ -1,12 +1,13 @@
 import 'package:field_service_client/utils/api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../bloc/odoo_models/odoo_models_bloc.dart';
 import 'fields_value.dart';
 
 class FieldsWidget extends StatefulWidget {
-  const FieldsWidget(
+  FieldsWidget(
       {required this.isEmpty,
       required this.pathId,
       required this.worksheetId,
@@ -17,6 +18,7 @@ class FieldsWidget extends StatefulWidget {
       required this.description,
       required this.interventionType,
       required this.isChecked,
+      required this.date,
       Key? key})
       : super(key: key);
 
@@ -32,6 +34,8 @@ class FieldsWidget extends StatefulWidget {
 
   final String interventionType;
   final bool isChecked;
+
+  String date;
 
   @override
   State<FieldsWidget> createState() => _FieldsWidgetState();
@@ -75,12 +79,13 @@ class _FieldsWidgetState extends State<FieldsWidget> {
             DateTime.now().year - 1, DateTime.now().month, DateTime.now().day),
         lastDate: DateTime.now());
     setState(() {
-      fieldsValue.date = response;
+      widget.date = DateFormat('yyyy-MM-dd').format(response!);
     });
+    print(widget.date);
   }
 
   void createWorksheetInformation() async {
-    final response = await apiProvider.createWorksheet(
+    await apiProvider.createWorksheet(
       widget.pathId,
       widget.name.text,
       widget.manufacturer,
@@ -89,12 +94,12 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       interventionType,
       widget.description.text,
       isChecked,
-      fieldsValue.date,
+      widget.date,
     );
   }
 
   void updateWorksheetInformation() async {
-    final response = await apiProvider.setWorksheet(
+    await apiProvider.setWorksheet(
       widget.worksheetId,
       widget.name.text,
       widget.manufacturer,
@@ -103,7 +108,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       interventionType,
       widget.description.text,
       isChecked,
-      fieldsValue.date,
+      widget.date,
     );
   }
 
@@ -280,9 +285,9 @@ class _FieldsWidgetState extends State<FieldsWidget> {
                               ],
                             ),
                             Text(
-                              fieldsValue.date == null
+                              widget.date == ""
                                   ? "Choose Date"
-                                  : fieldsValue.date.toString(),
+                                  : widget.date.toString(),
                             ),
                           ],
                         ),
