@@ -176,22 +176,6 @@ def get_worksheet():
         ),
     }
 
-    # manufacturers = query(
-    #     session["uid"],
-    #     session["password"],
-    #     "res.partner",
-    #     "search_read",
-    #     [],
-    #     ["commercial_partner_id"],
-    # )
-
-    # if len(response["worksheet"]) > 0:
-    #     response["worksheet"][0]["x_manufacturers"] = manufacturers
-    # else:
-    #     response["worksheet"].append({"x_manufacturers": manufacturers, "id": ""})
-
-    # print(response)
-
     return jsonify(response), 200
 
 
@@ -200,8 +184,6 @@ def set_worksheet():
     isAuth()
 
     id = int(request.args["id"])
-
-    print(request.json.get("manufacturer"))
 
     response = update(
         session["uid"],
@@ -212,6 +194,7 @@ def set_worksheet():
             {
                 "x_name": request.json.get("name"),
                 "x_manufacturer": request.json.get("manufacturer")[0],
+                "x_model": request.json.get("model")[0],
                 "x_serial_number": request.json.get("serial_no"),
                 "x_intervention_type": request.json.get("intervention_type"),
                 "x_description": request.json.get("description"),
@@ -238,6 +221,7 @@ def create_worksheet():
                 "x_name": request.json.get("name"),
                 "x_project_task_id": id,
                 "x_manufacturer": request.json.get("manufacturer")[0],
+                "x_model": request.json.get("model")[0],
                 "x_serial_number": request.json.get("serial_no"),
                 "x_intervention_type": request.json.get("intervention_type"),
                 "x_description": request.json.get("description"),
@@ -263,7 +247,23 @@ def get_models():
         ["commercial_partner_id"],
     )
 
-    response = {"models": {"partners": partners}}
+    products = query(
+        session["uid"],
+        session["password"],
+        "product.product",
+        "search_read",
+        [],
+        ["product_variant_id"],
+    )
+
+    print(products)
+
+    response = {
+        "models": {
+            "partners": partners,
+            "products": products,
+        }
+    }
 
     return jsonify(response), 200
 

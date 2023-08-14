@@ -91,6 +91,7 @@ class ApiProvider {
     String id,
     String name,
     List<dynamic> manufacturer,
+    List<dynamic> model,
     String serialNo,
     String interventionType,
     String description,
@@ -102,6 +103,7 @@ class ApiProvider {
       {
         'name': name,
         'manufacturer': manufacturer,
+        'model': model,
         'serial_no': serialNo,
         'intervention_type': interventionType,
         'description': description,
@@ -119,6 +121,7 @@ class ApiProvider {
     String id,
     String name,
     List<dynamic> manufacturer,
+    List<dynamic> model,
     String serialNo,
     String interventionType,
     String description,
@@ -130,6 +133,7 @@ class ApiProvider {
       {
         'name': name,
         'manufacturer': manufacturer,
+        'model': model,
         'serial_no': serialNo,
         'intervention_type': interventionType,
         'description': description,

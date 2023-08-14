@@ -6,8 +6,15 @@ part 'odoo_models_state.dart';
 
 class OdooModelsBloc extends Bloc<OdooModelsEvent, OdooModelsState> {
   OdooModelsBloc() : super(OdooModelsLoading()) {
-    on<GetOdooModels>((event, emit) {
-      emit(OdooModelsLoaded(partners: event.partners));
-    });
+    on<GetOdooModels>(
+      (event, emit) {
+        emit(
+          OdooModelsLoaded(
+            partners: event.partners,
+            products: event.products,
+          ),
+        );
+      },
+    );
   }
 }

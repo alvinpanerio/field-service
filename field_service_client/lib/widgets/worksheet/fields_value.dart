@@ -14,6 +14,7 @@ class FieldsValue {
   TextEditingController worksheetNameController = TextEditingController();
 
   List<dynamic> worksheetManufacturer = [];
+  List<dynamic> worksheetModel = [];
 
   TextEditingController worksheetSerialNoController = TextEditingController();
   // TextEditingController worksheetModelController = TextEditingController();
@@ -29,9 +30,10 @@ class FieldsValue {
   DateTime? date;
 
   void setControllers(
-      name, manufacturer, serialNo, intervention, description, isCheck) {
+      name, manufacturer, model, serialNo, intervention, description, isCheck) {
     worksheetNameController.text = name == false ? "" : name.toString();
     worksheetManufacturer = manufacturer == false ? [0, ""] : manufacturer;
+    worksheetModel = model == false ? [0, ""] : model;
     worksheetSerialNoController.text =
         serialNo == false ? "" : serialNo.toString();
     interventionType = intervention == false ? "" : intervention.toString();

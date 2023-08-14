@@ -8,10 +8,17 @@ sealed class OdooModelsEvent extends Equatable {
 }
 
 class GetOdooModels extends OdooModelsEvent {
-  const GetOdooModels({this.partners = const []});
+  const GetOdooModels({
+    this.partners = const [],
+    this.products = const [],
+  });
 
   final List<dynamic> partners;
+  final List<dynamic> products;
 
   @override
-  List<Object> get props => [partners];
+  List<Object> get props => [
+        partners,
+        products,
+      ];
 }

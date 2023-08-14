@@ -46,9 +46,9 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
           final modelsResponse = await apiProvider.getModels();
 
           // ignore: use_build_context_synchronously
-
-          context.read<OdooModelsBloc>().add(
-              GetOdooModels(partners: modelsResponse["models"]["partners"]));
+          context.read<OdooModelsBloc>().add(GetOdooModels(
+              partners: modelsResponse["models"]["partners"],
+              products: modelsResponse["models"]["products"]));
 
           // ignore: use_build_context_synchronously
           showModalBottomSheet(
@@ -70,7 +70,7 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                 }
                 if (state is WorksheetLoaded) {
                   List<dynamic> worksheet = state.worksheet;
-                  print(worksheet);
+                  // print(worksheet);
 
                   return Container(
                     padding: const EdgeInsets.symmetric(
@@ -89,6 +89,7 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                 worksheetId: "",
                                 name: fieldsValue.worksheetNameController,
                                 manufacturer: fieldsValue.worksheetManufacturer,
+                                model: fieldsValue.worksheetModel,
                                 serialNo:
                                     fieldsValue.worksheetSerialNoController,
                                 description:
@@ -109,8 +110,7 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                   fieldsValue.setControllers(
                                     worksheet[i]["x_name"],
                                     worksheet[i]["x_manufacturer"],
-                                    // List<dynamic>.from(json.decode(
-                                    //     worksheet[i]["x_manufacturer"])),
+                                    worksheet[i]["x_model"],
                                     worksheet[i]["x_serial_number"],
                                     worksheet[i]["x_intervention_type"],
                                     worksheet[i]["x_description"],
@@ -123,6 +123,7 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                     name: fieldsValue.worksheetNameController,
                                     manufacturer:
                                         fieldsValue.worksheetManufacturer,
+                                    model: fieldsValue.worksheetModel,
                                     serialNo:
                                         fieldsValue.worksheetSerialNoController,
                                     description: fieldsValue

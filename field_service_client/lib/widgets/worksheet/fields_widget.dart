@@ -12,6 +12,7 @@ class FieldsWidget extends StatefulWidget {
       required this.worksheetId,
       required this.name,
       required this.manufacturer,
+      required this.model,
       required this.serialNo,
       required this.description,
       required this.interventionType,
@@ -25,6 +26,7 @@ class FieldsWidget extends StatefulWidget {
 
   final TextEditingController name;
   final List<dynamic> manufacturer;
+  final List<dynamic> model;
   final TextEditingController serialNo;
   final TextEditingController description;
 
@@ -45,18 +47,22 @@ class _FieldsWidgetState extends State<FieldsWidget> {
   String interventionType = "";
 
   TextEditingController manufacturerController = TextEditingController();
+  TextEditingController modelController = TextEditingController();
 
   @override
   void initState() {
-    if (widget.manufacturer.isEmpty) {
+    if (widget.manufacturer.isEmpty || widget.model.isEmpty) {
       widget.manufacturer.add(0);
       widget.manufacturer.add("");
+      widget.model.add(0);
+      widget.model.add("");
     }
 
     if (!widget.isEmpty) {
       isChecked = widget.isChecked;
       interventionType = widget.interventionType;
       manufacturerController.text = widget.manufacturer[1].toString();
+      modelController.text = widget.model[1].toString();
     }
     super.initState();
   }
@@ -78,6 +84,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       widget.pathId,
       widget.name.text,
       widget.manufacturer,
+      widget.model,
       widget.serialNo.text,
       interventionType,
       widget.description.text,
@@ -91,6 +98,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       widget.worksheetId,
       widget.name.text,
       widget.manufacturer,
+      widget.model,
       widget.serialNo.text,
       interventionType,
       widget.description.text,
@@ -121,6 +129,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
               DropdownMenu(
                 controller: manufacturerController,
                 label: const Text('Manufacturer'),
+                width: MediaQuery.of(context).size.width - 40,
                 dropdownMenuEntries:
                     state.partners.map<DropdownMenuEntry<String>>((value) {
                   return DropdownMenuEntry<String>(
@@ -129,16 +138,42 @@ class _FieldsWidgetState extends State<FieldsWidget> {
                           "${value['id']},${value['commercial_partner_id'][1]}");
                 }).toList(),
                 onSelected: (String? value) {
-                  print(widget.manufacturer);
-
                   setState(() {
                     List<dynamic> valueArray = value!.split(',');
 
                     widget.manufacturer[0] = int.parse(valueArray[0]);
                     widget.manufacturer[1] = valueArray[1];
                   });
-                  print(widget.manufacturer);
                 },
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              DropdownMenu(
+                controller: modelController,
+                label: const Text('Model'),
+                width: MediaQuery.of(context).size.width - 40,
+                dropdownMenuEntries:
+                    state.products.map<DropdownMenuEntry<String>>((value) {
+                  return DropdownMenuEntry<String>(
+                      label: value["product_variant_id"][1],
+                      value:
+                          "${value['id']},${value['product_variant_id'][1]}");
+                }).toList(),
+                onSelected: (String? value) {
+                  print(widget.model);
+
+                  setState(() {
+                    List<dynamic> valueArray = value!.split(',');
+
+                    widget.model[0] = int.parse(valueArray[0]);
+                    widget.model[1] = valueArray[1];
+                  });
+                  print(widget.model);
+                },
+              ),
+              const SizedBox(
+                height: 15,
               ),
               TextField(
                 controller: widget.serialNo,
