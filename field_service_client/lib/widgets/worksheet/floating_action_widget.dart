@@ -104,6 +104,7 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                       isChecked: fieldsValue.isChecked,
                                       date: fieldsValue.date,
                                       signature: fieldsValue.signature,
+                                      picture: fieldsValue.picture,
                                     )
                                   ],
                                 ),
@@ -127,6 +128,7 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                           worksheet[i]["x_checkbox"],
                                           worksheet[i]["x_date"],
                                           worksheet[i]["x_worker_signature"],
+                                          worksheet[i]["x_picture"] ?? "",
                                         );
                                         return FieldsWidget(
                                           isEmpty: worksheet.isEmpty,
@@ -147,6 +149,7 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                           isChecked: fieldsValue.isChecked,
                                           date: fieldsValue.date,
                                           signature: fieldsValue.signature,
+                                          picture: fieldsValue.picture,
                                         );
                                       },
                                     ),

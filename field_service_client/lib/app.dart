@@ -51,12 +51,13 @@ class App extends StatelessWidget {
       ],
       child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
-          // if (state is UserLoading) {
-          //   return const Center(child: CircularProgressIndicator());
-          // }
+          if (state is UserLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
           if (state is UserLoaded) {
             User user = state.user;
+            print(user.name.isNotEmpty);
             return MaterialApp.router(
               title: 'AWB Field Service',
               debugShowCheckedModeBanner: false,

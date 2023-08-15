@@ -1,3 +1,4 @@
+import 'package:field_service_client/bloc/user/user_bloc.dart';
 import 'package:field_service_client/screens/home_screen.dart';
 import 'package:field_service_client/screens/login_screen.dart';
 import 'package:field_service_client/screens/task_item_screen.dart';
@@ -5,7 +6,9 @@ import 'package:field_service_client/screens/tasks_screen.dart';
 import 'package:field_service_client/widgets/bottom_navbar_widget.dart';
 import 'package:field_service_client/widgets/safe_area_widget.dart';
 import 'package:flutter/material.dart';
+
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -26,6 +29,7 @@ class AppRouter {
             GoRoute(
               name: "login",
               path: '/login',
+              redirect: ((context, state) => _redirect(isAuth)),
               pageBuilder: (context, state) {
                 return MaterialPage(
                   child: SafeAreaWidget(
@@ -38,6 +42,7 @@ class AppRouter {
             GoRoute(
               name: "home",
               path: '/',
+              redirect: ((context, state) => _redirect(isAuth)),
               pageBuilder: (context, state) {
                 return MaterialPage(
                   child: SafeAreaWidget(
@@ -50,6 +55,7 @@ class AppRouter {
             GoRoute(
               name: "tasks",
               path: '/tasks',
+              redirect: ((context, state) => _redirect(isAuth)),
               pageBuilder: (context, state) {
                 return MaterialPage(
                   child: SafeAreaWidget(
@@ -62,6 +68,7 @@ class AppRouter {
             GoRoute(
               name: "taskItem",
               path: '/task/:id',
+              redirect: ((context, state) => _redirect(isAuth)),
               pageBuilder: (context, state) {
                 return MaterialPage(
                   child: SafeAreaWidget(
@@ -74,19 +81,13 @@ class AppRouter {
           ],
         ),
       ],
-      initialLocation: "/",
-      redirect: (context, state) {
-        if (isAuth) {
-          if (state.location == "/login") {
-            return "/";
-          }
-          return null;
-        } else {
-          return '/login';
-        }
-      },
     );
 
     return router;
+  }
+
+  static String? _redirect(bool context) {
+    // final userState = context.watch<UserBloc>().state;
+    return context ? null : "/login";
   }
 }

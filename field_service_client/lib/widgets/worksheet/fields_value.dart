@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 class FieldsValue {
@@ -35,8 +36,10 @@ class FieldsValue {
 
   String signature = "";
 
+  String picture = "";
+
   void setControllers(name, manufacturer, model, serialNo, intervention,
-      description, isCheck, dateValue, signatureValue) {
+      description, isCheck, dateValue, signatureValue, pictureValue) {
     worksheetNameController.text = name == false ? "" : name.toString();
     worksheetManufacturer = manufacturer == false ? [0, ""] : manufacturer;
     worksheetModel = model == false ? [0, ""] : model;
@@ -48,6 +51,7 @@ class FieldsValue {
     isChecked = isCheck;
     date = dateValue == false ? "" : dateValue;
     signature = signatureValue == false ? "" : signatureValue;
+    picture = pictureValue == false ? "" : pictureValue;
   }
 
   String convertInterventionTypeType(String value) {

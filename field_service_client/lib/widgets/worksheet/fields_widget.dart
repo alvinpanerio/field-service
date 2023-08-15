@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:camera/camera.dart';
+import 'package:field_service_client/main.dart';
 import 'package:field_service_client/utils/api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,6 +28,7 @@ class FieldsWidget extends StatefulWidget {
       required this.isChecked,
       required this.date,
       required this.signature,
+      required this.picture,
       Key? key})
       : super(key: key);
 
@@ -46,6 +49,8 @@ class FieldsWidget extends StatefulWidget {
 
   String signature;
 
+  String picture;
+
   @override
   State<FieldsWidget> createState() => _FieldsWidgetState();
 }
@@ -64,8 +69,13 @@ class _FieldsWidgetState extends State<FieldsWidget> {
 
   final GlobalKey<SfSignaturePadState> signatureGlobalKey = GlobalKey();
 
+  CameraController? controller;
+  String imagePath = "";
+
   @override
   void initState() {
+    super.initState();
+
     if (widget.manufacturer.isEmpty || widget.model.isEmpty) {
       widget.manufacturer.add(0);
       widget.manufacturer.add("");
@@ -79,7 +89,6 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       manufacturerController.text = widget.manufacturer[1].toString();
       modelController.text = widget.model[1].toString();
     }
-    super.initState();
   }
 
   void openCalendarPicker() async {
@@ -390,6 +399,17 @@ class _FieldsWidgetState extends State<FieldsWidget> {
                     ),
                   ),
                 ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              CameraPage(title: "camera", picture: widget.picture),
+              Image.memory(
+                const Base64Codec().decode(widget.picture),
+                gaplessPlayback: true,
+              ),
+              const SizedBox(
+                height: 15,
               ),
               FilledButton(
                 onPressed: () {
