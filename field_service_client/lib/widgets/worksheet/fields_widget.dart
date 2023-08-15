@@ -119,6 +119,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       widget.description.text,
       isChecked,
       widget.date,
+      widget.signature,
     );
   }
 
@@ -133,6 +134,53 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       widget.description.text,
       isChecked,
       widget.date,
+      widget.signature,
+    );
+  }
+
+  void _openSignaturePad() {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Change Signature'),
+        content: SizedBox(
+          height: 150,
+          child: Column(
+            children: [
+              const Text("Please draw your signature on the space provided!"),
+              const SizedBox(
+                height: 15,
+              ),
+              AspectRatio(
+                aspectRatio: 361 / 120,
+                child: Container(
+                  color: Colors.white,
+                  child: SfSignaturePad(
+                    key: signatureGlobalKey,
+                    backgroundColor: Colors.transparent,
+                    strokeColor: Colors.black,
+                    minimumStrokeWidth: 3.0,
+                    maximumStrokeWidth: 4.0,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              _saveSignature();
+              context.pop();
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -291,47 +339,10 @@ class _FieldsWidgetState extends State<FieldsWidget> {
                   ),
                   widget.signature.isNotEmpty
                       ? FilledButton.tonal(
-                          onPressed: () => showDialog<String>(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                  title: const Text('Change Signature'),
-                                  content: SizedBox(
-                                    height: 310,
-                                    child: Column(
-                                      children: [
-                                        const Text(
-                                            "Please draw your signature on the space provided!"),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        SfSignaturePad(
-                                          key: signatureGlobalKey,
-                                          backgroundColor: Colors.white,
-                                          strokeColor: Colors.black,
-                                          minimumStrokeWidth: 1.0,
-                                          maximumStrokeWidth: 4.0,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () => context.pop(),
-                                      child: const Text('Cancel'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () async {
-                                        _saveSignature();
-                                        context.pop();
-                                      },
-                                      child: const Text('Save'),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                          onPressed: () => _openSignaturePad(),
                           child: const Text("Change signature"))
                       : FilledButton.tonal(
-                          onPressed: () {},
+                          onPressed: () => _openSignaturePad(),
                           child: const Text("Create a signature")),
                 ],
               ),

@@ -102,6 +102,7 @@ class ApiProvider {
     String description,
     bool isChecked,
     String date,
+    String signature,
   ) async {
     final rawResponse = await _post(
       "/update-worksheet?id=$id",
@@ -114,6 +115,7 @@ class ApiProvider {
         'description': description,
         'is_checked': isChecked,
         'date': date,
+        'signature': signature,
       },
     );
 
@@ -132,6 +134,7 @@ class ApiProvider {
     String description,
     bool? isChecked,
     String date,
+    String signature,
   ) async {
     final rawResponse = await _post(
       "/create-worksheet?id=$id",
@@ -144,6 +147,7 @@ class ApiProvider {
         'description': description,
         'is_checked': isChecked,
         'date': date,
+        'signature': signature,
       },
     );
 
