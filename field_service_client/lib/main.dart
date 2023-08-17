@@ -83,17 +83,27 @@ class _CameraPageState extends State<CameraPage> {
                         CameraPreview(controller!),
                         Row(
                           children: [
-                            
                             FilledButton.tonal(
                                 onPressed: () async {
                                   try {
                                     final rawImage =
                                         await controller!.takePicture();
 
-                                    final bytes = await rawImage.readAsBytes();
+                                    // final bytes = await rawImage.readAsBytes();
+                                    // final image = await File('image.png')
+                                    //     .writeAsBytes(bytes);
+                                    // print("eto");
+                                    // print(image);
+
+                                    final image = Image.network(
+                                        File(rawImage.path).toString());
+
+                                        
+
+                                    print(image);
 
                                     setState(() {
-                                      widget.picture = base64.encode(bytes);
+                                      // widget.picture = base64.encode(bytes);
                                     });
                                     print(widget.picture);
                                     controller = CameraController(

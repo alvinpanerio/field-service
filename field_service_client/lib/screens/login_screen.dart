@@ -4,6 +4,7 @@ import 'package:field_service_client/utils/api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../bloc/user/user_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
 
@@ -21,6 +23,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    void go(response) {
+      context.read<UserBloc>().add(SetUser(
+          name: response["name"].toString(),
+          cookies: response["name"].toString()));
+
+      context
+          .read<ServiceBloc>()
+          .add(SetServices(services: response["services"]));
+    }
+
     return BlocListener<UserBloc, UserState>(
       listener: (context, state) {},
       child: Center(
@@ -53,19 +65,30 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 20),
             FilledButton(
               onPressed: () async {
-                final response = await apiProvider.login(
-                  emailController.text,
-                  passwordController.text,
-                  context,
-                );
+                try {
+                  final response = await apiProvider.login(
+                    emailController.text,
+                    passwordController.text,
+                    context,
+                  );
 
-                context.read<UserBloc>().add(SetUser(
-                    name: response["name"].toString(),
-                    cookies: response["name"].toString()));
+                  final SharedPreferences prefs = await _prefs;
 
-                context
-                    .read<ServiceBloc>()
-                    .add(SetServices(services: response["services"]));
+                  prefs.setString('user', response["name"].toString());
+
+                  // context.read<UserBloc>().add(SetUser(
+                  //     name: response["name"].toString(),
+                  //     cookies: response["name"].toString()));
+
+                  // context
+                  //     .read<ServiceBloc>()
+                  //     .add(SetServices(services: response["services"]));
+
+                  context.push("/");
+                } catch (e) {
+                  // Handle the error, log it, or show an error message
+                  print("An error occurred: $e");
+                }
               },
               style: FilledButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,

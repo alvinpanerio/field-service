@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../bloc/service/service_bloc.dart';
 import '../models/user.dart';
 import '../bloc/user/user_bloc.dart';
@@ -14,6 +16,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ApiProvider apiProvider = ApiProvider();
+
+  Future<void> go(pref) async {
+    final SharedPreferences prefs = await pref;
+    await prefs.remove('user');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
@@ -60,6 +68,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         .add(SetServices(services: response["services"]));
                   },
                   child: const Text("My tasks"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    final Future<SharedPreferences> prefs =
+                        SharedPreferences.getInstance();
+                    go(prefs);
+                    context.push("/login");
+                  },
+                  child: const Text("All tasks"),
                 ),
               ],
             )

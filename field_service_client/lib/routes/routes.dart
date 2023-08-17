@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:field_service_client/bloc/user/user_bloc.dart';
 import 'package:field_service_client/screens/home_screen.dart';
 import 'package:field_service_client/screens/login_screen.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -29,7 +32,7 @@ class AppRouter {
             GoRoute(
               name: "login",
               path: '/login',
-              redirect: ((context, state) => _redirect(isAuth)),
+              redirect: ((context, state) => _redirect(context, state)),
               pageBuilder: (context, state) {
                 return MaterialPage(
                   child: SafeAreaWidget(
@@ -42,7 +45,7 @@ class AppRouter {
             GoRoute(
               name: "home",
               path: '/',
-              redirect: ((context, state) => _redirect(isAuth)),
+              redirect: ((context, state) => _redirect(context, state)),
               pageBuilder: (context, state) {
                 return MaterialPage(
                   child: SafeAreaWidget(
@@ -55,7 +58,7 @@ class AppRouter {
             GoRoute(
               name: "tasks",
               path: '/tasks',
-              redirect: ((context, state) => _redirect(isAuth)),
+              redirect: ((context, state) => _redirect(context, state)),
               pageBuilder: (context, state) {
                 return MaterialPage(
                   child: SafeAreaWidget(
@@ -68,7 +71,7 @@ class AppRouter {
             GoRoute(
               name: "taskItem",
               path: '/task/:id',
-              redirect: ((context, state) => _redirect(isAuth)),
+              redirect: ((context, state) => _redirect(context, state)),
               pageBuilder: (context, state) {
                 return MaterialPage(
                   child: SafeAreaWidget(
@@ -86,8 +89,20 @@ class AppRouter {
     return router;
   }
 
-  static String? _redirect(bool context) {
-    // final userState = context.watch<UserBloc>().state;
-    return context ? null : "/login";
+  static Future<String?> _redirect(context, state) async {
+    final user = await go();
+    if (user) {
+      return "/login";
+    }
+    if (state.location == "/login" && !user) {
+      return "/";
+    }
+    return null;
+  }
+
+  static Future<bool> go() async {
+    final Future<SharedPreferences> pref = SharedPreferences.getInstance();
+    final SharedPreferences prefs = await pref;
+    return prefs.getString('user').isNull;
   }
 }
