@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:field_service_client/bloc/user/user_bloc.dart';
 import 'package:field_service_client/screens/home_screen.dart';
 import 'package:field_service_client/screens/login_screen.dart';
@@ -91,10 +89,10 @@ class AppRouter {
 
   static Future<String?> _redirect(context, state) async {
     final user = await go();
-    if (user) {
+    if (!user) {
       return "/login";
     }
-    if (state.location == "/login" && !user) {
+    if (state.location == "/login" && user) {
       return "/";
     }
     return null;
@@ -103,6 +101,10 @@ class AppRouter {
   static Future<bool> go() async {
     final Future<SharedPreferences> pref = SharedPreferences.getInstance();
     final SharedPreferences prefs = await pref;
-    return prefs.getString('user').isNull;
+    if (prefs.containsKey("user")) {
+      return prefs.getString("user").toString().isNotEmpty;
+    } else {
+      return false;
+    }
   }
 }

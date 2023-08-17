@@ -404,10 +404,10 @@ class _FieldsWidgetState extends State<FieldsWidget> {
                 height: 15,
               ),
               CameraPage(title: "camera", picture: widget.picture),
-              Image.memory(
-                const Base64Codec().decode(widget.picture),
-                gaplessPlayback: true,
-              ),
+              // Image.memory(
+              //   _convertBase64Image(widget.picture.toString()),
+              //   gaplessPlayback: true,
+              // ),
               const SizedBox(
                 height: 15,
               ),

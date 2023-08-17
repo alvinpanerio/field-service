@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:field_service_client/bloc/worksheet/worksheet_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:requests/requests.dart';
 
 class ApiProvider {
   final Dio dio = Dio();
@@ -9,13 +10,14 @@ class ApiProvider {
   Future _get(String res) async {
     try {
       dio.options.extra['withCredentials'] = true;
-      final response = await dio.get(
-        "${dotenv.env['API_URL']}" "$res",
+      final response = await Requests.get(
+        "http://localhost:5000" "$res",
+        bodyEncoding: RequestBodyEncoding.JSON,
       );
 
-      print(response);
+      print(response.json());
 
-      return response;
+      return response.json();
     } catch (err) {
       return;
     }
@@ -23,16 +25,20 @@ class ApiProvider {
 
   Future _post(String res, [Map<String, dynamic>? data]) async {
     try {
-      dio.options.extra['withCredentials'] = true;
+      // dio.options.extra['withCredentials'] = true;
 
-      final response = await dio.post(
-        "${dotenv.env['API_URL']}" "$res",
-        data: data,
+      final response = await Requests.post(
+        "http://localhost:5000" "$res",
+        body: {
+          'email': "alvin.panerio@achievewithoutborders.com",
+          'password': "alvinpanerio",
+        },
+        bodyEncoding: RequestBodyEncoding.JSON,
       );
 
-      print(response);
+      print(response.json());
 
-      return response;
+      return response.json();
     } catch (err) {
       return err;
     }
@@ -47,7 +53,7 @@ class ApiProvider {
       },
     );
 
-    Map<String, dynamic> response = jsonDecode(rawResponse.toString());
+    final response = rawResponse;
 
     return response;
   }
@@ -57,7 +63,7 @@ class ApiProvider {
       "/all-tasks",
     );
 
-    Map<String, dynamic> response = jsonDecode(rawResponse.toString());
+    final response = rawResponse;
 
     return response;
   }
@@ -67,7 +73,7 @@ class ApiProvider {
       "/my-tasks",
     );
 
-    Map<String, dynamic> response = jsonDecode(rawResponse.toString());
+    final response = rawResponse;
 
     return response;
   }
@@ -77,7 +83,7 @@ class ApiProvider {
       "/task?id=$id",
     );
 
-    Map<String, dynamic> response = jsonDecode(rawResponse.toString());
+    final response = rawResponse;
 
     return response;
   }
@@ -87,7 +93,7 @@ class ApiProvider {
       "/worksheet?id=$id",
     );
 
-    Map<String, dynamic> response = jsonDecode(rawResponse.toString());
+    final response = rawResponse;
 
     return response;
   }
@@ -119,7 +125,7 @@ class ApiProvider {
       },
     );
 
-    bool response = jsonDecode(rawResponse.toString());
+    final response = rawResponse;
 
     return response;
   }
@@ -151,7 +157,7 @@ class ApiProvider {
       },
     );
 
-    int response = jsonDecode(rawResponse.toString());
+    final response = rawResponse;
 
     return response;
   }
@@ -161,7 +167,7 @@ class ApiProvider {
       "/models",
     );
 
-    Map<String, dynamic> response = jsonDecode(rawResponse.toString());
+    final response = rawResponse;
 
     return response;
   }

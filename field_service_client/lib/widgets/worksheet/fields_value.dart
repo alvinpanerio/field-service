@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:basic_utils/basic_utils.dart';
+// import 'package:basic_utils/basic_utils.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
@@ -58,6 +58,7 @@ class FieldsValue {
     String converted = value.replaceAllMapped(RegExp(r'_\w'), (match) {
       return ' ${match.group(0)![1].toUpperCase()}';
     });
-    return StringUtils.capitalize(converted.toString());
+    return converted.toString();
+    // StringUtils.capitalize(converted.toString());
   }
 }

@@ -5,7 +5,7 @@ import 'package:field_service_client/routes/routes.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import '../bloc/user/user_bloc.dart';
 
 import 'bloc/task/task_bloc.dart';
@@ -62,7 +62,7 @@ class App extends StatelessWidget {
               title: 'AWB Field Service',
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
-                fontFamily: GoogleFonts.lato().fontFamily,
+                // fontFamily: GoogleFonts.lato().fontFamily,
                 colorScheme: ColorScheme.fromSeed(
                   seedColor: const Color(0xff333267),
                 ),

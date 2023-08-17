@@ -1,28 +1,26 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-
 import 'package:camera/camera.dart';
-import 'package:cross_file_image/cross_file_image.dart';
-import 'package:field_service_client/widgets/worksheet/fields_value.dart';
 import 'package:flutter/material.dart';
 import 'package:field_service_client/app.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image/image.dart' as img;
 
 List<CameraDescription>? cameras;
-Future main() async {
-  await dotenv.load(fileName: ".env");
-
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
-
   runApp(
     const App(),
   );
 }
+
+// Future<void> getAllAsync() async {
+//   await dotenv.load(fileName: ".env");
+
+//   WidgetsFlutterBinding.ensureInitialized();
+//   cameras = await availableCameras();
+// }
 
 class CameraPage extends StatefulWidget {
   CameraPage({Key? key, required this.title, required this.picture})
@@ -41,7 +39,7 @@ class _CameraPageState extends State<CameraPage> {
   @override
   void initState() {
     super.initState();
-    controller = CameraController(cameras![1], ResolutionPreset.max);
+    controller = CameraController(cameras![0], ResolutionPreset.max);
     controller?.initialize().then((_) {
       if (!mounted) {
         return;
@@ -61,6 +59,11 @@ class _CameraPageState extends State<CameraPage> {
     if (!controller!.value.isInitialized) {
       return Container();
     }
+
+    Uint8List _convertBase64Image(String base64String) {
+      return const Base64Decoder().convert(base64String.split(',').last);
+    }
+
     return Column(
       children: [
         const SizedBox(
@@ -71,8 +74,6 @@ class _CameraPageState extends State<CameraPage> {
             context: context,
             builder: (_) => Material(
               type: MaterialType.transparency,
-
-              // Aligns the container to center
               child: Scaffold(
                 body: SafeArea(
                   child: Container(
@@ -89,25 +90,22 @@ class _CameraPageState extends State<CameraPage> {
                                     final rawImage =
                                         await controller!.takePicture();
 
-                                    // final bytes = await rawImage.readAsBytes();
-                                    // final image = await File('image.png')
-                                    //     .writeAsBytes(bytes);
-                                    // print("eto");
-                                    // print(image);
+                                    final data = await rawImage.readAsBytes();
 
-                                    final image = Image.network(
-                                        File(rawImage.path).toString());
+                                    ui.Image image =
+                                        await decodeImageFromList(data);
 
-                                        
-
-                                    print(image);
+                                    final bytes = await image.toByteData(
+                                        format: ui.ImageByteFormat.png);
 
                                     setState(() {
-                                      // widget.picture = base64.encode(bytes);
+                                      widget.picture = base64
+                                          .encode(bytes!.buffer.asUint8List())
+                                          .toString();
                                     });
-                                    print(widget.picture);
+
                                     controller = CameraController(
-                                        cameras![1], ResolutionPreset.max);
+                                        cameras![0], ResolutionPreset.max);
                                     controller?.initialize().then((_) {
                                       if (!mounted) {
                                         return;
@@ -125,6 +123,11 @@ class _CameraPageState extends State<CameraPage> {
                                   // fixedSize: const Size(60, 60),
                                 ),
                                 child: const Icon(Icons.check)),
+                            // Image.memory(
+                            //   const Base64Decoder().convert(
+                            //       widget.picture.toString().split(',').last),
+                            //   gaplessPlayback: true,
+                            // ),
                             FilledButton.tonal(
                                 style: ElevatedButton.styleFrom(
                                   shape: const CircleBorder(),
@@ -132,7 +135,7 @@ class _CameraPageState extends State<CameraPage> {
                                 ),
                                 onPressed: () {
                                   controller = CameraController(
-                                      cameras![1], ResolutionPreset.max);
+                                      cameras![0], ResolutionPreset.max);
                                   controller?.initialize().then((_) {
                                     if (!mounted) {
                                       return;
@@ -152,6 +155,10 @@ class _CameraPageState extends State<CameraPage> {
             ),
           ),
           child: const Text("OpenCamera"),
+        ),
+        Image.memory(
+          _convertBase64Image(widget.picture.toString()),
+          gaplessPlayback: true,
         ),
       ],
     );
