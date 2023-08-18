@@ -43,7 +43,16 @@ def log_in():
         session["uid"] = uid
         session["email"] = request.json.get("email")
         session["password"] = request.json.get("password")
+    else:
+        return "Unauthorized!", 401
 
+    isAuth()
+
+    return jsonify({"message": "Already log in!"}), 200
+
+
+@app.route("/name", methods=["GET"])
+def get_name():
     isAuth()
 
     name = query(
@@ -55,21 +64,7 @@ def log_in():
         ["name"],
     )
 
-    services = query(
-        session["uid"],
-        session["password"],
-        "project.task",
-        "search_read",
-        [],
-        [
-            "name",
-            "partner_id",
-            "project_id",
-            "user_ids",
-        ],
-    )
-
-    response = {"name": name[0]["name"], "services": services}
+    response = {"name": name[0]["name"]}
 
     return jsonify(response), 200
 
@@ -90,6 +85,8 @@ def get_all_tasks():
                 "partner_id",
                 "project_id",
                 "user_ids",
+                "date_assign",
+                "date_deadline",
             ],
         )
     }

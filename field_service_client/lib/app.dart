@@ -2,12 +2,10 @@ import 'package:field_service_client/bloc/odoo_models/odoo_models_bloc.dart';
 import 'package:field_service_client/bloc/service/service_bloc.dart';
 import 'package:field_service_client/bloc/worksheet/worksheet_bloc.dart';
 import 'package:field_service_client/routes/routes.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../bloc/user/user_bloc.dart';
-
 import 'bloc/task/task_bloc.dart';
 import 'models/user.dart';
 
@@ -21,7 +19,7 @@ class App extends StatelessWidget {
         BlocProvider(
           create: (context) => UserBloc()
             ..add(
-              const GetName(),
+              const SetUser(),
             ),
         ),
         BlocProvider(
@@ -57,14 +55,23 @@ class App extends StatelessWidget {
 
           if (state is UserLoaded) {
             User user = state.user;
-            print(user.name.isNotEmpty);
             return MaterialApp.router(
               title: 'AWB Field Service',
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
-                // fontFamily: GoogleFonts.lato().fontFamily,
+                fontFamily: GoogleFonts.ptSans().fontFamily,
+                primaryColor: const Color(0xff323264),
                 colorScheme: ColorScheme.fromSeed(
-                  seedColor: const Color(0xff333267),
+                  seedColor: const Color(0xff323264),
+                ),
+                textTheme: const TextTheme(
+                  displayLarge: TextStyle(
+                    fontSize: 68,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff323264),
+                  ),
+                  titleLarge: TextStyle(fontSize: 36),
+                  bodyMedium: TextStyle(fontSize: 14),
                 ),
                 useMaterial3: true,
               ),

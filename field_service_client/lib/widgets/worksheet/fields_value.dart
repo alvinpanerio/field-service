@@ -1,9 +1,3 @@
-import 'dart:collection';
-import 'dart:convert';
-import 'dart:typed_data';
-
-// import 'package:basic_utils/basic_utils.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 class FieldsValue {
@@ -22,7 +16,7 @@ class FieldsValue {
   List<dynamic> worksheetModel = [];
 
   TextEditingController worksheetSerialNoController = TextEditingController();
-  // TextEditingController worksheetModelController = TextEditingController();
+
   TextEditingController worksheetDescriptionController =
       TextEditingController();
 

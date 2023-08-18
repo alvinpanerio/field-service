@@ -7,60 +7,42 @@ import 'package:requests/requests.dart';
 class ApiProvider {
   final Dio dio = Dio();
 
-  Future _get(String res) async {
-    try {
-      dio.options.extra['withCredentials'] = true;
-      final response = await Requests.get(
-        "http://localhost:5000" "$res",
-        bodyEncoding: RequestBodyEncoding.JSON,
-      );
-
-      print(response.json());
-
-      return response.json();
-    } catch (err) {
-      return;
-    }
-  }
-
-  Future _post(String res, [Map<String, dynamic>? data]) async {
-    try {
-      // dio.options.extra['withCredentials'] = true;
-
-      final response = await Requests.post(
-        "http://localhost:5000" "$res",
-        body: data,
-        bodyEncoding: RequestBodyEncoding.JSON,
-      );
-
-      print(response.json());
-
-      return response.json();
-    } catch (err) {
-      return err;
-    }
-  }
-
-  Future login(String email, String password, context) async {
-    final rawResponse = await _post(
-      "/login",
-      // {
-      //   'email': email,
-      //   'password': password,
-      // },
-      {
-        'email': "alvin.panerio@achievewithoutborders.com",
-        'password': "alvinpanerio",
-      },
+  Future get(String res) async {
+    // dio.options.extra['withCredentials'] = true;
+    final response = await Requests.get(
+      "http://localhost:5000" "$res",
+      bodyEncoding: RequestBodyEncoding.JSON,
     );
 
-    final response = rawResponse;
+    // print(response.json());
 
-    return response;
+    if (response.statusCode == 200) {
+      return response.json();
+    } else {
+      return response.throwForStatus();
+    }
+  }
+
+  Future post(String res, [Map<String, dynamic>? data]) async {
+    // dio.options.extra['withCredentials'] = true;
+
+    final response = await Requests.post(
+      "http://localhost:5000" "$res",
+      body: data,
+      bodyEncoding: RequestBodyEncoding.JSON,
+    );
+
+    // print(response.json());
+
+    if (response.statusCode == 200) {
+      return response.json();
+    } else {
+      return HTTPException("Unauthorized", response);
+    }
   }
 
   Future getAllTasks() async {
-    final rawResponse = await _get(
+    final rawResponse = await get(
       "/all-tasks",
     );
 
@@ -70,7 +52,7 @@ class ApiProvider {
   }
 
   Future getMyTasks() async {
-    final rawResponse = await _get(
+    final rawResponse = await get(
       "/my-tasks",
     );
 
@@ -80,7 +62,7 @@ class ApiProvider {
   }
 
   Future getTask(String id) async {
-    final rawResponse = await _get(
+    final rawResponse = await get(
       "/task?id=$id",
     );
 
@@ -90,7 +72,7 @@ class ApiProvider {
   }
 
   Future getWorksheet(String id) async {
-    final rawResponse = await _get(
+    final rawResponse = await get(
       "/worksheet?id=$id",
     );
 
@@ -112,7 +94,7 @@ class ApiProvider {
     String signature,
     String picture,
   ) async {
-    final rawResponse = await _post(
+    final rawResponse = await post(
       "/update-worksheet?id=$id",
       {
         'name': name,
@@ -146,7 +128,7 @@ class ApiProvider {
     String signature,
     String picture,
   ) async {
-    final rawResponse = await _post(
+    final rawResponse = await post(
       "/create-worksheet?id=$id",
       {
         'name': name,
@@ -168,7 +150,7 @@ class ApiProvider {
   }
 
   Future getModels() async {
-    final rawResponse = await _get(
+    final rawResponse = await get(
       "/models",
     );
 

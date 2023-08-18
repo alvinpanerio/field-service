@@ -4,7 +4,8 @@ import 'package:field_service_client/screens/login_screen.dart';
 import 'package:field_service_client/screens/task_item_screen.dart';
 import 'package:field_service_client/screens/tasks_screen.dart';
 import 'package:field_service_client/widgets/bottom_navbar_widget.dart';
-import 'package:field_service_client/widgets/safe_area_widget.dart';
+import 'package:field_service_client/widgets/safe_area/safe_area_home_tasks.dart';
+import 'package:field_service_client/widgets/safe_area/safe_area_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
@@ -45,10 +46,9 @@ class AppRouter {
               path: '/',
               redirect: ((context, state) => _redirect(context, state)),
               pageBuilder: (context, state) {
-                return MaterialPage(
-                  child: SafeAreaWidget(
-                    const HomeScreen(),
-                    state,
+                return const MaterialPage(
+                  child: SafeAreaHomeTasks(
+                    HomeScreen(),
                   ),
                 );
               },
@@ -58,10 +58,9 @@ class AppRouter {
               path: '/tasks',
               redirect: ((context, state) => _redirect(context, state)),
               pageBuilder: (context, state) {
-                return MaterialPage(
-                  child: SafeAreaWidget(
-                    const TasksScreen(),
-                    state,
+                return const MaterialPage(
+                  child: SafeAreaHomeTasks(
+                    TasksScreen(),
                   ),
                 );
               },

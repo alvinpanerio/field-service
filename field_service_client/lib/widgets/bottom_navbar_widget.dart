@@ -14,6 +14,7 @@ class BottomNavbarWidget extends StatefulWidget {
 
 class _BottomNavbarWidgetState extends State<BottomNavbarWidget> {
   int currentPageIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +37,6 @@ class _BottomNavbarWidgetState extends State<BottomNavbarWidget> {
                 GoRouter.of(context).push("/tasks");
               }
               break;
-              
           }
         },
         selectedIndex: currentPageIndex,

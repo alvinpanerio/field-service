@@ -10,7 +10,10 @@ class UserState extends Equatable {
 
 class UserInitial extends UserState {}
 
-class UserLoading extends UserState {}
+class UserLoading extends UserState {
+  @override
+  List<Object> get props => [];
+}
 
 class UserLoaded extends UserState {
   const UserLoaded({
