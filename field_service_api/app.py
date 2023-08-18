@@ -12,7 +12,7 @@ import xmlrpc.client
 app = Flask(__name__)
 
 
-app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["SECRET_KEY"] = environ.get("SESSION_SECRET")
 
@@ -172,6 +172,7 @@ def get_worksheet():
                 "x_checkbox",
                 "x_date",
                 "x_worker_signature",
+                "x_picture",
             ],
         ),
     }
@@ -184,6 +185,21 @@ def set_worksheet():
     isAuth()
 
     id = int(request.args["id"])
+
+    print(
+        {
+            "x_name": request.json.get("name"),
+            "x_project_task_id": id,
+            "x_manufacturer": request.json.get("manufacturer")[0],
+            "x_model": request.json.get("model")[0],
+            "x_serial_number": request.json.get("serial_no"),
+            "x_intervention_type": request.json.get("intervention_type"),
+            "x_description": request.json.get("description"),
+            "x_checkbox": request.json.get("is_checked"),
+            "x_date": request.json.get("date"),
+            "x_picture": request.json.get("picture"),
+        }
+    )
 
     response = update(
         session["uid"],
@@ -201,6 +217,7 @@ def set_worksheet():
                 "x_checkbox": request.json.get("is_checked"),
                 "x_date": request.json.get("date"),
                 "x_worker_signature": request.json.get("signature"),
+                "x_picture": request.json.get("picture"),
             },
         ],
     )
@@ -229,7 +246,7 @@ def create_worksheet():
                 "x_description": request.json.get("description"),
                 "x_checkbox": request.json.get("is_checked"),
                 "x_date": request.json.get("date"),
-                "x_worker_signature": request.json.get("signature"),
+                "x_picture": request.json.get("picture"),
             }
         ],
     )

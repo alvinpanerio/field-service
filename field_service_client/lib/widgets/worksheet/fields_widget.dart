@@ -76,6 +76,14 @@ class _FieldsWidgetState extends State<FieldsWidget> {
   void initState() {
     super.initState();
 
+    controller = CameraController(cameras![0], ResolutionPreset.max);
+    controller?.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    });
+
     if (widget.manufacturer.isEmpty || widget.model.isEmpty) {
       widget.manufacturer.add(0);
       widget.manufacturer.add("");
@@ -89,6 +97,12 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       manufacturerController.text = widget.manufacturer[1].toString();
       modelController.text = widget.model[1].toString();
     }
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
   }
 
   void openCalendarPicker() async {
@@ -118,6 +132,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
   }
 
   void createWorksheetInformation() async {
+    print(widget.picture);
     await apiProvider.createWorksheet(
       widget.pathId,
       widget.name.text,
@@ -129,10 +144,12 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       isChecked,
       widget.date,
       widget.signature,
+      widget.picture,
     );
   }
 
   void updateWorksheetInformation() async {
+    print(widget.picture);
     await apiProvider.setWorksheet(
       widget.worksheetId,
       widget.name.text,
@@ -144,6 +161,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       isChecked,
       widget.date,
       widget.signature,
+      widget.picture,
     );
   }
 
@@ -403,7 +421,95 @@ class _FieldsWidgetState extends State<FieldsWidget> {
               const SizedBox(
                 height: 15,
               ),
-              CameraPage(title: "camera", picture: widget.picture),
+              FilledButton.tonal(
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (_) => Material(
+                    type: MaterialType.transparency,
+                    child: Scaffold(
+                      body: SafeArea(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          child: Stack(
+                            children: [
+                              CameraPreview(controller!),
+                              Row(
+                                children: [
+                                  FilledButton.tonal(
+                                      onPressed: () async {
+                                        try {
+                                          final rawImage =
+                                              await controller!.takePicture();
+
+                                          final data =
+                                              await rawImage.readAsBytes();
+
+                                          ui.Image image =
+                                              await decodeImageFromList(data);
+
+                                          final bytes = await image.toByteData(
+                                              format: ui.ImageByteFormat.png);
+
+                                          setState(() {
+                                            widget.picture = base64
+                                                .encode(
+                                                    bytes!.buffer.asUint8List())
+                                                .toString();
+                                          });
+
+                                          controller = CameraController(
+                                              cameras![0],
+                                              ResolutionPreset.max);
+                                          controller?.initialize().then((_) {
+                                            if (!mounted) {
+                                              return;
+                                            }
+                                            setState(() {});
+                                          });
+                                          context.pop();
+                                        } catch (e) {
+                                          // ignore: avoid_print
+                                          print(e);
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        shape: const CircleBorder(),
+                                        // fixedSize: const Size(60, 60),
+                                      ),
+                                      child: const Icon(Icons.check)),
+                                  FilledButton.tonal(
+                                      style: ElevatedButton.styleFrom(
+                                        shape: const CircleBorder(),
+                                        // fixedSize: const Size(60, 60),
+                                      ),
+                                      onPressed: () {
+                                        controller = CameraController(
+                                            cameras![0], ResolutionPreset.max);
+                                        controller?.initialize().then((_) {
+                                          if (!mounted) {
+                                            return;
+                                          }
+                                          setState(() {});
+                                        });
+                                        context.pop();
+                                      },
+                                      child: const Icon(Icons.close))
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                child: const Text("OpenCamera"),
+              ),
+              Image.memory(
+                _convertBase64Image(widget.picture.toString()),
+                gaplessPlayback: true,
+              ),
               // Image.memory(
               //   _convertBase64Image(widget.picture.toString()),
               //   gaplessPlayback: true,

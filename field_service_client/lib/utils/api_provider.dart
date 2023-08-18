@@ -29,10 +29,7 @@ class ApiProvider {
 
       final response = await Requests.post(
         "http://localhost:5000" "$res",
-        body: {
-          'email': "alvin.panerio@achievewithoutborders.com",
-          'password': "alvinpanerio",
-        },
+        body: data,
         bodyEncoding: RequestBodyEncoding.JSON,
       );
 
@@ -47,9 +44,13 @@ class ApiProvider {
   Future login(String email, String password, context) async {
     final rawResponse = await _post(
       "/login",
+      // {
+      //   'email': email,
+      //   'password': password,
+      // },
       {
-        'email': email,
-        'password': password,
+        'email': "alvin.panerio@achievewithoutborders.com",
+        'password': "alvinpanerio",
       },
     );
 
@@ -109,6 +110,7 @@ class ApiProvider {
     bool isChecked,
     String date,
     String signature,
+    String picture,
   ) async {
     final rawResponse = await _post(
       "/update-worksheet?id=$id",
@@ -122,6 +124,7 @@ class ApiProvider {
         'is_checked': isChecked,
         'date': date,
         'signature': signature,
+        'picture': picture,
       },
     );
 
@@ -141,6 +144,7 @@ class ApiProvider {
     bool? isChecked,
     String date,
     String signature,
+    String picture,
   ) async {
     final rawResponse = await _post(
       "/create-worksheet?id=$id",
@@ -154,6 +158,7 @@ class ApiProvider {
         'is_checked': isChecked,
         'date': date,
         'signature': signature,
+        'picture': picture,
       },
     );
 
