@@ -243,6 +243,7 @@ def create_worksheet():
                 "x_description": request.json.get("description"),
                 "x_checkbox": request.json.get("is_checked"),
                 "x_date": request.json.get("date"),
+                "x_worker_signature": request.json.get("signature"),
                 "x_studio_picture": request.json.get("picture"),
             }
         ],
