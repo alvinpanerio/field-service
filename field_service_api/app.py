@@ -137,6 +137,7 @@ def get_task():
             [
                 "project_id",
                 "user_ids",
+                "display_name",
                 "partner_id",
                 "partner_phone",
                 "sale_line_id",
