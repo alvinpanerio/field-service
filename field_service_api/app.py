@@ -169,7 +169,7 @@ def get_worksheet():
                 "x_checkbox",
                 "x_date",
                 "x_worker_signature",
-                "x_picture",
+                "x_studio_picture",
             ],
         ),
     }
@@ -194,7 +194,7 @@ def set_worksheet():
             "x_description": request.json.get("description"),
             "x_checkbox": request.json.get("is_checked"),
             "x_date": request.json.get("date"),
-            "x_picture": request.json.get("picture"),
+            "x_studio_picture": request.json.get("picture"),
         }
     )
 
@@ -214,7 +214,7 @@ def set_worksheet():
                 "x_checkbox": request.json.get("is_checked"),
                 "x_date": request.json.get("date"),
                 "x_worker_signature": request.json.get("signature"),
-                "x_picture": request.json.get("picture"),
+                "x_studio_picture": request.json.get("picture"),
             },
         ],
     )
@@ -243,7 +243,7 @@ def create_worksheet():
                 "x_description": request.json.get("description"),
                 "x_checkbox": request.json.get("is_checked"),
                 "x_date": request.json.get("date"),
-                "x_picture": request.json.get("picture"),
+                "x_studio_picture": request.json.get("picture"),
             }
         ],
     )
