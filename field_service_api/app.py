@@ -85,6 +85,7 @@ def get_all_tasks():
                 "partner_id",
                 "project_id",
                 "user_ids",
+                "stage_id",
                 "date_assign",
                 "date_deadline",
             ],
