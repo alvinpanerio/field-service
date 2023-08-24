@@ -19,40 +19,42 @@ class _BottomNavbarWidgetState extends State<BottomNavbarWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(child: widget.child),
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
+      bottomNavigationBar: GoRouter.of(context).location == "/login"
+          ? null
+          : NavigationBar(
+              onDestinationSelected: (int index) {
+                setState(() {
+                  currentPageIndex = index;
+                });
 
-          switch (currentPageIndex) {
-            case 0:
-              {
-                GoRouter.of(context).push("/");
-              }
-              break;
+                switch (currentPageIndex) {
+                  case 0:
+                    {
+                      GoRouter.of(context).push("/");
+                    }
+                    break;
 
-            case 1:
-              {
-                GoRouter.of(context).push("/tasks");
-              }
-              break;
-          }
-        },
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home_rounded),
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.task_rounded),
-            icon: Icon(Icons.task_outlined),
-            label: 'My Tasks',
-          ),
-        ],
-      ),
+                  case 1:
+                    {
+                      GoRouter.of(context).push("/tasks");
+                    }
+                    break;
+                }
+              },
+              selectedIndex: currentPageIndex,
+              destinations: const <Widget>[
+                NavigationDestination(
+                  selectedIcon: Icon(Icons.home_rounded),
+                  icon: Icon(Icons.home_outlined),
+                  label: 'Home',
+                ),
+                NavigationDestination(
+                  selectedIcon: Icon(Icons.task_rounded),
+                  icon: Icon(Icons.task_outlined),
+                  label: 'My Tasks',
+                ),
+              ],
+            ),
     );
   }
 }

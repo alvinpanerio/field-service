@@ -1,20 +1,16 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:field_service_client/bloc/worksheet/worksheet_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:requests/requests.dart';
 
 class ApiProvider {
   final Dio dio = Dio();
 
   Future get(String res) async {
-    // dio.options.extra['withCredentials'] = true;
     final response = await Requests.get(
       "http://localhost:5000" "$res",
       bodyEncoding: RequestBodyEncoding.JSON,
     );
 
-    // print(response.json());
+    print(response.json());
 
     if (response.statusCode == 200) {
       return response.json();
@@ -24,15 +20,13 @@ class ApiProvider {
   }
 
   Future post(String res, [Map<String, dynamic>? data]) async {
-    // dio.options.extra['withCredentials'] = true;
-
     final response = await Requests.post(
       "http://localhost:5000" "$res",
       body: data,
       bodyEncoding: RequestBodyEncoding.JSON,
     );
 
-    // print(response.json());
+    print(response.json());
 
     if (response.statusCode == 200) {
       return response.json();

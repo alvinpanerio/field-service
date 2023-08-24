@@ -62,10 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // SizedBox(
-                //   height: MediaQuery.of(context).size.height * 0.1,
-                //   child: Container(color:Theme.of(context).primaryColor),
-                // ),
                 Text(
                   "Login",
                   style: Theme.of(context).textTheme.displayLarge,

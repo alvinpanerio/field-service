@@ -59,7 +59,7 @@ class App extends StatelessWidget {
               title: 'AWB Field Service',
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
-                fontFamily: GoogleFonts.ptSans().fontFamily,
+                fontFamily: GoogleFonts.montserrat().fontFamily,
                 primaryColor: const Color(0xff323264),
                 colorScheme: ColorScheme.fromSeed(
                   seedColor: const Color(0xff323264),

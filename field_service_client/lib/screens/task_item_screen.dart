@@ -43,7 +43,23 @@ class _TaskItemScreenState extends State<TaskItemScreen> {
           return ListView.builder(
             itemCount: task.length,
             itemBuilder: (BuildContext context, int index) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Card(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(
+                        task[0]["display_name"].toString(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 46,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
                 Text(
                   task[0]["id"].toString(),
                 ),

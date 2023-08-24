@@ -72,7 +72,7 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
 
                   return DraggableScrollableSheet(
                     expand: false,
-                    initialChildSize: 0.6,
+                    initialChildSize: 0.8,
                     maxChildSize: 1.0,
                     minChildSize: 0.6,
                     builder: (context, controller) => SingleChildScrollView(
@@ -83,31 +83,29 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                           vertical: 20,
                         ),
                         child: worksheet.isEmpty
-                            ? Flexible(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    FieldsWidget(
-                                      isEmpty: worksheet.isEmpty,
-                                      pathId: widget.state.params["id"]!,
-                                      worksheetId: "",
-                                      name: fieldsValue.worksheetNameController,
-                                      manufacturer:
-                                          fieldsValue.worksheetManufacturer,
-                                      model: fieldsValue.worksheetModel,
-                                      serialNo: fieldsValue
-                                          .worksheetSerialNoController,
-                                      description: fieldsValue
-                                          .worksheetDescriptionController,
-                                      interventionType:
-                                          fieldsValue.interventionType,
-                                      isChecked: fieldsValue.isChecked,
-                                      date: fieldsValue.date,
-                                      signature: fieldsValue.signature,
-                                      picture: fieldsValue.picture,
-                                    )
-                                  ],
-                                ),
+                            ? Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  FieldsWidget(
+                                    isEmpty: worksheet.isEmpty,
+                                    pathId: widget.state.params["id"]!,
+                                    worksheetId: "",
+                                    name: fieldsValue.worksheetNameController,
+                                    manufacturer:
+                                        fieldsValue.worksheetManufacturer,
+                                    model: fieldsValue.worksheetModel,
+                                    serialNo:
+                                        fieldsValue.worksheetSerialNoController,
+                                    description: fieldsValue
+                                        .worksheetDescriptionController,
+                                    interventionType:
+                                        fieldsValue.interventionType,
+                                    isChecked: fieldsValue.isChecked,
+                                    date: fieldsValue.date,
+                                    signature: fieldsValue.signature,
+                                    picture: fieldsValue.picture,
+                                  )
+                                ],
                               )
                             : Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -128,7 +126,8 @@ class _FloatingActionWidgetState extends State<FloatingActionWidget> {
                                           worksheet[i]["x_checkbox"],
                                           worksheet[i]["x_date"],
                                           worksheet[i]["x_worker_signature"],
-                                          worksheet[i]["x_picture"] ?? "",
+                                          worksheet[i]["x_studio_picture"] ??
+                                              "",
                                         );
                                         return FieldsWidget(
                                           isEmpty: worksheet.isEmpty,

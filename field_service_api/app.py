@@ -92,6 +92,31 @@ def get_all_tasks():
         )
     }
 
+    ids = {}
+
+    for task in response["services"]:
+        for id in task["user_ids"]:
+            if id not in ids:
+                ids[id] = ""
+
+    for value, id in enumerate(ids):
+        picture = query(
+            session["uid"],
+            session["password"],
+            "res.partner",
+            "search_read",
+            [[["user_ids", "=", id]]],
+            [
+                "avatar_128",
+            ],
+        )
+        ids[id] = picture
+
+    for task in response["services"]:
+        for value, id in enumerate(task["user_ids"]):
+            print(ids[id])
+            task["user_ids"][value] = ids[id]
+
     return jsonify(response), 200
 
 

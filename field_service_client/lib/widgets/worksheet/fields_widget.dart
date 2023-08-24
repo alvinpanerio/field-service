@@ -510,10 +510,6 @@ class _FieldsWidgetState extends State<FieldsWidget> {
                 _convertBase64Image(widget.picture.toString()),
                 gaplessPlayback: true,
               ),
-              // Image.memory(
-              //   _convertBase64Image(widget.picture.toString()),
-              //   gaplessPlayback: true,
-              // ),
               const SizedBox(
                 height: 15,
               ),
