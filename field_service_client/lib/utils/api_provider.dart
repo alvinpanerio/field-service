@@ -87,6 +87,7 @@ class ApiProvider {
     String date,
     String signature,
     String picture,
+    List<String> pictures,
   ) async {
     final rawResponse = await post(
       "/update-worksheet?id=$id",
@@ -101,6 +102,7 @@ class ApiProvider {
         'date': date,
         'signature': signature,
         'picture': picture,
+        'pictures': pictures,
       },
     );
 
@@ -121,6 +123,7 @@ class ApiProvider {
     String date,
     String signature,
     String picture,
+    List<String> pictures,
   ) async {
     final rawResponse = await post(
       "/create-worksheet?id=$id",
@@ -135,6 +138,7 @@ class ApiProvider {
         'date': date,
         'signature': signature,
         'picture': picture,
+        'pictures': pictures,
       },
     );
 

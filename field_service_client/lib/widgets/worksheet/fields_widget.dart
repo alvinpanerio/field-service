@@ -8,6 +8,7 @@ import 'package:field_service_client/utils/api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
@@ -71,6 +72,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
 
   CameraController? controller;
   String imagePath = "";
+  List<String> galleryImages = [];
 
   @override
   void initState() {
@@ -145,6 +147,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       widget.date,
       widget.signature,
       widget.picture,
+      galleryImages,
     );
   }
 
@@ -162,6 +165,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       widget.date,
       widget.signature,
       widget.picture,
+      galleryImages,
     );
   }
 
@@ -209,6 +213,26 @@ class _FieldsWidgetState extends State<FieldsWidget> {
         ],
       ),
     );
+  }
+
+  Future<void> _addImage() async {
+    galleryImages = [];
+
+    final ImagePicker picker = ImagePicker();
+
+    final List<XFile> images = await picker.pickMultiImage();
+
+    for (var i = 0; i < images.length; i++) {
+      final data = await images[i].readAsBytes();
+      ui.Image image = await decodeImageFromList(data);
+      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+      setState(() {
+        galleryImages
+            .add(base64.encode(bytes!.buffer.asUint8List()).toString());
+      });
+    }
+
+    print(galleryImages);
   }
 
   @override
@@ -421,95 +445,130 @@ class _FieldsWidgetState extends State<FieldsWidget> {
               const SizedBox(
                 height: 15,
               ),
-              FilledButton.tonal(
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (_) => Material(
-                    type: MaterialType.transparency,
-                    child: Scaffold(
-                      body: SafeArea(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          child: Stack(
-                            children: [
-                              CameraPreview(controller!),
-                              Row(
+              Row(
+                children: [
+                  FilledButton.tonal(
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (_) => Material(
+                        type: MaterialType.transparency,
+                        child: Scaffold(
+                          body: SafeArea(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              child: Stack(
                                 children: [
-                                  FilledButton.tonal(
-                                      onPressed: () async {
-                                        try {
-                                          final rawImage =
-                                              await controller!.takePicture();
+                                  CameraPreview(controller!),
+                                  Row(
+                                    children: [
+                                      FilledButton.tonal(
+                                          onPressed: () async {
+                                            try {
+                                              final rawImage = await controller!
+                                                  .takePicture();
 
-                                          final data =
-                                              await rawImage.readAsBytes();
+                                              final data =
+                                                  await rawImage.readAsBytes();
 
-                                          ui.Image image =
-                                              await decodeImageFromList(data);
+                                              ui.Image image =
+                                                  await decodeImageFromList(
+                                                      data);
 
-                                          final bytes = await image.toByteData(
-                                              format: ui.ImageByteFormat.png);
+                                              final bytes =
+                                                  await image.toByteData(
+                                                      format: ui
+                                                          .ImageByteFormat.png);
 
-                                          setState(() {
-                                            widget.picture = base64
-                                                .encode(
-                                                    bytes!.buffer.asUint8List())
-                                                .toString();
-                                          });
+                                              setState(() {
+                                                widget.picture = base64
+                                                    .encode(bytes!.buffer
+                                                        .asUint8List())
+                                                    .toString();
+                                              });
 
-                                          controller = CameraController(
-                                              cameras![0],
-                                              ResolutionPreset.max);
-                                          controller?.initialize().then((_) {
-                                            if (!mounted) {
-                                              return;
+                                              controller = CameraController(
+                                                  cameras![0],
+                                                  ResolutionPreset.max);
+                                              controller
+                                                  ?.initialize()
+                                                  .then((_) {
+                                                if (!mounted) {
+                                                  return;
+                                                }
+                                                setState(() {});
+                                              });
+                                              context.pop();
+                                            } catch (e) {
+                                              // ignore: avoid_print
+                                              print(e);
                                             }
-                                            setState(() {});
-                                          });
-                                          context.pop();
-                                        } catch (e) {
-                                          // ignore: avoid_print
-                                          print(e);
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        shape: const CircleBorder(),
-                                        // fixedSize: const Size(60, 60),
-                                      ),
-                                      child: const Icon(Icons.check)),
-                                  FilledButton.tonal(
-                                      style: ElevatedButton.styleFrom(
-                                        shape: const CircleBorder(),
-                                        // fixedSize: const Size(60, 60),
-                                      ),
-                                      onPressed: () {
-                                        controller = CameraController(
-                                            cameras![0], ResolutionPreset.max);
-                                        controller?.initialize().then((_) {
-                                          if (!mounted) {
-                                            return;
-                                          }
-                                          setState(() {});
-                                        });
-                                        context.pop();
-                                      },
-                                      child: const Icon(Icons.close))
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            shape: const CircleBorder(),
+                                            // fixedSize: const Size(60, 60),
+                                          ),
+                                          child: const Icon(Icons.check)),
+                                      FilledButton.tonal(
+                                          style: ElevatedButton.styleFrom(
+                                            shape: const CircleBorder(),
+                                            // fixedSize: const Size(60, 60),
+                                          ),
+                                          onPressed: () {
+                                            controller = CameraController(
+                                                cameras![0],
+                                                ResolutionPreset.max);
+                                            controller?.initialize().then((_) {
+                                              if (!mounted) {
+                                                return;
+                                              }
+                                              setState(() {});
+                                            });
+                                            context.pop();
+                                          },
+                                          child: const Icon(Icons.close))
+                                    ],
+                                  ),
                                 ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
                     ),
+                    child: const Text("OpenCamera"),
                   ),
-                ),
-                child: const Text("OpenCamera"),
+                  FilledButton.tonal(
+                    onPressed: _addImage,
+                    child: const Text("Browse"),
+                  ),
+                  // FilledButton.tonal(
+                  //   onPressed: () async {
+                  //     final ImagePicker picker = ImagePicker();
+                  //     await picker.pickImage(source: ImageSource.camera);
+                  //   },
+                  //   child: const Text("Browse"),
+                  // )
+                ],
               ),
-              Image.memory(
-                _convertBase64Image(widget.picture.toString()),
-                gaplessPlayback: true,
-              ),
+              galleryImages.isEmpty
+                  ? const SizedBox.shrink()
+                  : Wrap(
+                      children: <Widget>[
+                        for (var image in galleryImages)
+                          Image.memory(
+                            _convertBase64Image(image.toString()),
+                            gaplessPlayback: true,
+                            width: (MediaQuery.of(context).size.width - 40) / 3,
+                            height:
+                                (MediaQuery.of(context).size.width - 40) / 3,
+                          ),
+                      ],
+                    ),
+              // Image.memory(
+              //   _convertBase64Image(widget.picture.toString()),
+              //   gaplessPlayback: true,
+              // ),
               const SizedBox(
                 height: 15,
               ),
