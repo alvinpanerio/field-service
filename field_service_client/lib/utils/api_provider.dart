@@ -1,12 +1,10 @@
-import 'package:dio/dio.dart';
 import 'package:requests/requests.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiProvider {
-  final Dio dio = Dio();
-
   Future get(String res) async {
     final response = await Requests.get(
-      "http://localhost:5000" "$res",
+      "${dotenv.env['API_URL']}" "$res",
       bodyEncoding: RequestBodyEncoding.JSON,
     );
 
@@ -21,7 +19,7 @@ class ApiProvider {
 
   Future post(String res, [Map<String, dynamic>? data]) async {
     final response = await Requests.post(
-      "http://localhost:5000" "$res",
+      "${dotenv.env['API_URL']}" "$res",
       body: data,
       bodyEncoding: RequestBodyEncoding.JSON,
     );
@@ -86,8 +84,7 @@ class ApiProvider {
     bool isChecked,
     String date,
     String signature,
-    String picture,
-    List<String> pictures,
+    List<dynamic> pictures,
   ) async {
     final rawResponse = await post(
       "/update-worksheet?id=$id",
@@ -101,7 +98,6 @@ class ApiProvider {
         'is_checked': isChecked,
         'date': date,
         'signature': signature,
-        'picture': picture,
         'pictures': pictures,
       },
     );
@@ -122,8 +118,7 @@ class ApiProvider {
     bool? isChecked,
     String date,
     String signature,
-    String picture,
-    List<String> pictures,
+    List<dynamic> pictures,
   ) async {
     final rawResponse = await post(
       "/create-worksheet?id=$id",
@@ -137,7 +132,6 @@ class ApiProvider {
         'is_checked': isChecked,
         'date': date,
         'signature': signature,
-        'picture': picture,
         'pictures': pictures,
       },
     );

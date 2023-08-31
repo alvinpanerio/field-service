@@ -30,7 +30,7 @@ class FieldsValue {
 
   String signature = "";
 
-  String picture = "";
+  List<dynamic> pictures = [];
 
   void setControllers(name, manufacturer, model, serialNo, intervention,
       description, isCheck, dateValue, signatureValue, pictureValue) {
@@ -45,7 +45,7 @@ class FieldsValue {
     isChecked = isCheck;
     date = dateValue == false ? "" : dateValue;
     signature = signatureValue == false ? "" : signatureValue;
-    picture = pictureValue == false ? "" : pictureValue;
+    pictures = pictureValue == false ? "" : pictureValue;
   }
 
   String convertInterventionTypeType(String value) {

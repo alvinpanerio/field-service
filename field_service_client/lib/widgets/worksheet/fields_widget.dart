@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-
 import 'package:camera/camera.dart';
-import 'package:field_service_client/main.dart';
 import 'package:field_service_client/utils/api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,7 +27,7 @@ class FieldsWidget extends StatefulWidget {
       required this.isChecked,
       required this.date,
       required this.signature,
-      required this.picture,
+      required this.pictures,
       Key? key})
       : super(key: key);
 
@@ -50,7 +48,7 @@ class FieldsWidget extends StatefulWidget {
 
   String signature;
 
-  String picture;
+  List<dynamic> pictures;
 
   @override
   State<FieldsWidget> createState() => _FieldsWidgetState();
@@ -72,13 +70,11 @@ class _FieldsWidgetState extends State<FieldsWidget> {
 
   CameraController? controller;
   String imagePath = "";
-  List<String> galleryImages = [];
 
   @override
   void initState() {
     super.initState();
 
-    controller = CameraController(cameras![0], ResolutionPreset.max);
     controller?.initialize().then((_) {
       if (!mounted) {
         return;
@@ -134,7 +130,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
   }
 
   void createWorksheetInformation() async {
-    print(widget.picture);
+    print(widget.pictures);
     await apiProvider.createWorksheet(
       widget.pathId,
       widget.name.text,
@@ -146,13 +142,12 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       isChecked,
       widget.date,
       widget.signature,
-      widget.picture,
-      galleryImages,
+      widget.pictures,
     );
   }
 
   void updateWorksheetInformation() async {
-    print(widget.picture);
+    print(widget.pictures);
     await apiProvider.setWorksheet(
       widget.worksheetId,
       widget.name.text,
@@ -164,8 +159,7 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       isChecked,
       widget.date,
       widget.signature,
-      widget.picture,
-      galleryImages,
+      widget.pictures,
     );
   }
 
@@ -216,8 +210,6 @@ class _FieldsWidgetState extends State<FieldsWidget> {
   }
 
   Future<void> _addImage() async {
-    galleryImages = [];
-
     final ImagePicker picker = ImagePicker();
 
     final List<XFile> images = await picker.pickMultiImage();
@@ -227,12 +219,12 @@ class _FieldsWidgetState extends State<FieldsWidget> {
       ui.Image image = await decodeImageFromList(data);
       final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
       setState(() {
-        galleryImages
+        widget.pictures
             .add(base64.encode(bytes!.buffer.asUint8List()).toString());
       });
     }
 
-    print(galleryImages);
+    print(widget.pictures);
   }
 
   @override
@@ -289,15 +281,12 @@ class _FieldsWidgetState extends State<FieldsWidget> {
                           "${value['id']},${value['product_variant_id'][1]}");
                 }).toList(),
                 onSelected: (String? value) {
-                  print(widget.model);
-
                   setState(() {
                     List<dynamic> valueArray = value!.split(',');
 
                     widget.model[0] = int.parse(valueArray[0]);
                     widget.model[1] = valueArray[1];
                   });
-                  print(widget.model);
                 },
               ),
               const SizedBox(
@@ -448,114 +437,34 @@ class _FieldsWidgetState extends State<FieldsWidget> {
               Row(
                 children: [
                   FilledButton.tonal(
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (_) => Material(
-                        type: MaterialType.transparency,
-                        child: Scaffold(
-                          body: SafeArea(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              child: Stack(
-                                children: [
-                                  CameraPreview(controller!),
-                                  Row(
-                                    children: [
-                                      FilledButton.tonal(
-                                          onPressed: () async {
-                                            try {
-                                              final rawImage = await controller!
-                                                  .takePicture();
-
-                                              final data =
-                                                  await rawImage.readAsBytes();
-
-                                              ui.Image image =
-                                                  await decodeImageFromList(
-                                                      data);
-
-                                              final bytes =
-                                                  await image.toByteData(
-                                                      format: ui
-                                                          .ImageByteFormat.png);
-
-                                              setState(() {
-                                                widget.picture = base64
-                                                    .encode(bytes!.buffer
-                                                        .asUint8List())
-                                                    .toString();
-                                              });
-
-                                              controller = CameraController(
-                                                  cameras![0],
-                                                  ResolutionPreset.max);
-                                              controller
-                                                  ?.initialize()
-                                                  .then((_) {
-                                                if (!mounted) {
-                                                  return;
-                                                }
-                                                setState(() {});
-                                              });
-                                              context.pop();
-                                            } catch (e) {
-                                              // ignore: avoid_print
-                                              print(e);
-                                            }
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            shape: const CircleBorder(),
-                                            // fixedSize: const Size(60, 60),
-                                          ),
-                                          child: const Icon(Icons.check)),
-                                      FilledButton.tonal(
-                                          style: ElevatedButton.styleFrom(
-                                            shape: const CircleBorder(),
-                                            // fixedSize: const Size(60, 60),
-                                          ),
-                                          onPressed: () {
-                                            controller = CameraController(
-                                                cameras![0],
-                                                ResolutionPreset.max);
-                                            controller?.initialize().then((_) {
-                                              if (!mounted) {
-                                                return;
-                                              }
-                                              setState(() {});
-                                            });
-                                            context.pop();
-                                          },
-                                          child: const Icon(Icons.close))
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    child: const Text("OpenCamera"),
-                  ),
-                  FilledButton.tonal(
                     onPressed: _addImage,
                     child: const Text("Browse"),
                   ),
-                  // FilledButton.tonal(
-                  //   onPressed: () async {
-                  //     final ImagePicker picker = ImagePicker();
-                  //     await picker.pickImage(source: ImageSource.camera);
-                  //   },
-                  //   child: const Text("Browse"),
-                  // )
+                  FilledButton.tonal(
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+                      XFile? rawImage =
+                          await picker.pickImage(source: ImageSource.camera);
+                      final data = await rawImage?.readAsBytes();
+                      ui.Image image = await decodeImageFromList(data!);
+                      final bytes = await image.toByteData(
+                          format: ui.ImageByteFormat.png);
+                      setState(() {
+                        widget.pictures.add(base64
+                            .encode(bytes!.buffer.asUint8List())
+                            .toString());
+                      });
+                      print(widget.pictures);
+                    },
+                    child: const Text("Open Camera"),
+                  )
                 ],
               ),
-              galleryImages.isEmpty
+              widget.pictures.isEmpty
                   ? const SizedBox.shrink()
                   : Wrap(
                       children: <Widget>[
-                        for (var image in galleryImages)
+                        for (var image in widget.pictures)
                           Image.memory(
                             _convertBase64Image(image.toString()),
                             gaplessPlayback: true,
@@ -565,10 +474,6 @@ class _FieldsWidgetState extends State<FieldsWidget> {
                           ),
                       ],
                     ),
-              // Image.memory(
-              //   _convertBase64Image(widget.picture.toString()),
-              //   gaplessPlayback: true,
-              // ),
               const SizedBox(
                 height: 15,
               ),

@@ -199,10 +199,23 @@ def get_worksheet():
                 "x_checkbox",
                 "x_date",
                 "x_worker_signature",
-                "x_studio_picture",
+                "x_studio_pictures",
             ],
         ),
     }
+
+    if response["worksheet"]:
+        for value, i in enumerate(response["worksheet"][0]["x_studio_pictures"]):
+            datas = query(
+                session["uid"],
+                session["password"],
+                "ir.attachment",
+                "search_read",
+                [[["id", "=", i]]],
+                ["datas"],
+            )
+
+            response["worksheet"][0]["x_studio_pictures"][value] = datas[0]["datas"]
 
     return jsonify(response), 200
 
@@ -212,21 +225,31 @@ def set_worksheet():
     isAuth()
 
     id = int(request.args["id"])
+    print(id)
 
-    print(
-        {
-            "x_name": request.json.get("name"),
-            "x_project_task_id": id,
-            "x_manufacturer": request.json.get("manufacturer")[0],
-            "x_model": request.json.get("model")[0],
-            "x_serial_number": request.json.get("serial_no"),
-            "x_intervention_type": request.json.get("intervention_type"),
-            "x_description": request.json.get("description"),
-            "x_checkbox": request.json.get("is_checked"),
-            "x_date": request.json.get("date"),
-            "x_studio_picture": request.json.get("picture"),
-        }
-    )
+    pictures = request.json.get("pictures")
+    updatedPictures = []
+    num = 0
+
+    for i in pictures:
+        num += 1
+        imageId = create(
+            session["uid"],
+            session["password"],
+            "ir.attachment",
+            [
+                {
+                    "name": f"{request.json.get('name')}-{num}",
+                    "type": "binary",
+                    "res_name": request.json.get("name"),
+                    "datas": i,
+                    "res_model": "x_project_task_worksheet_template_2",
+                    "res_id": id,
+                },
+            ],
+        )
+
+        updatedPictures.append(imageId)
 
     response = update(
         session["uid"],
@@ -244,8 +267,7 @@ def set_worksheet():
                 "x_checkbox": request.json.get("is_checked"),
                 "x_date": request.json.get("date"),
                 "x_worker_signature": request.json.get("signature"),
-                "x_studio_picture": request.json.get("picture"),
-                "x_studio_picturesss": request.json.get("pictures"),
+                "x_studio_pictures": updatedPictures,
             },
         ],
     )
@@ -259,7 +281,7 @@ def create_worksheet():
 
     id = int(request.args["id"])
 
-    response = create(
+    worksheetId = create(
         session["uid"],
         session["password"],
         "x_project_task_worksheet_template_2",
@@ -275,9 +297,44 @@ def create_worksheet():
                 "x_checkbox": request.json.get("is_checked"),
                 "x_date": request.json.get("date"),
                 "x_worker_signature": request.json.get("signature"),
-                "x_studio_picture": request.json.get("picture"),
-                "x_studio_picturesss": request.json.get("pictures"),
+                "x_studio_pictures": [],
             }
+        ],
+    )
+
+    pictures = request.json.get("pictures")
+    updatedPictures = []
+    num = 0
+
+    for i in pictures:
+        num += 1
+        imageId = create(
+            session["uid"],
+            session["password"],
+            "ir.attachment",
+            [
+                {
+                    "name": f"{request.json.get('name')}-{num}",
+                    "type": "binary",
+                    "res_name": request.json.get("name"),
+                    "datas": i,
+                    "res_model": "x_project_task_worksheet_template_2",
+                    "res_id": worksheetId,
+                },
+            ],
+        )
+
+        updatedPictures.append(imageId)
+
+    response = update(
+        session["uid"],
+        session["password"],
+        "x_project_task_worksheet_template_2",
+        [
+            [worksheetId],
+            {
+                "x_studio_pictures": updatedPictures,
+            },
         ],
     )
 
