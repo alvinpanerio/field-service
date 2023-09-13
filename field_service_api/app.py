@@ -364,10 +364,10 @@ def get_models():
     )
 
     response = {
-        "models": {
+        "models": [{
             "partners": partners,
             "products": products,
-        }
+        }]
     }
 
     return jsonify(response), 200
